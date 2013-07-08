@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[notions:iaarchiver]]></title><description><![CDATA[blog where I write notions]]></description><link>http://iaarchiver.github.io</link><generator>NodeJS RSS Module</generator><lastBuildDate>Mon, 08 Jul 2013 15:31:03 GMT</lastBuildDate><atom:link href="http://iaarchiver.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[grunt-contrib-copyでのパス指定]]></title><description><![CDATA[<p><a href="https://github.com/gruntjs/grunt-contrib-copy/issues/60">https://github.com/gruntjs/grunt-contrib-copy/issues/60</a></p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[notions:iaarchiver]]></title><description><![CDATA[blog where I write notions]]></description><link>http://iaarchiver.github.io</link><generator>NodeJS RSS Module</generator><lastBuildDate>Mon, 08 Jul 2013 15:44:16 GMT</lastBuildDate><atom:link href="http://iaarchiver.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[grunt-contrib-copyでのパス指定]]></title><description><![CDATA[<p><a href="https://github.com/gruntjs/grunt-contrib-copy/issues/60">https://github.com/gruntjs/grunt-contrib-copy/issues/60</a></p>
 <p>GithubのIssueでも語られていますが，grunt-contrib-copyのパスの指定方法に注意が必要だったのでメモします．</p>
 <p>指定フォルダ内のファイルを階層を維持しながら別の場所へコピーしたい場合<code>cp path/* dest/</code>のつもりで以下のように指定すると思った通りのパスへコピーしてくれません．</p>
 <pre><code>    <span class="method">copy:</span> {
@@ -48,7 +48,7 @@
 <p>...要するに紛らわしいという話です．</p>
 <h2>まずはsonataでmpdをちゃんと起動できているか確認する</h2>
 <p>sonataを起動し，コンテクストメニューからPreference画面を開いて以下のように設定します．</p>
-<p><img src="img/sonata.jpg" alt="sonata"></p>
+<p><img src="/img/sonata.jpg" alt="sonata"></p>
 <p>Portは<code>~/.mpdconf</code>で指定したものと同じ値を入力します．また，外部のデバイスから聞く場合はHostをmpdを走らせているマシンのローカルIPアドレスを指定する必要があります．</p>
 <p>ユーザ設定がきちんと読み込まれていればmpd起動の瞬間に，sonataのLibraryタブに<code>~/.mpdconf</code>で指定したフォルダ内の音楽ファイルが表示されます．</p>
 <h2><code>/etc/init.d/mpd</code>がデーモンとして起動時に実行される</h2>
