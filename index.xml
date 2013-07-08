@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[notions:iaarchiver]]></title><description><![CDATA[blog where I write notions]]></description><link>http://iaarchiver.github.io</link><generator>NodeJS RSS Module</generator><lastBuildDate>Mon, 08 Jul 2013 15:31:03 GMT</lastBuildDate><atom:link href="http://iaarchiver.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[grunt-contrib-copyでのパス指定]]></title><description><![CDATA[<p><a href="https://github.com/gruntjs/grunt-contrib-copy/issues/60">https://github.com/gruntjs/grunt-contrib-copy/issues/60</a></p>
+<p>GithubのIssueでも語られていますが，grunt-contrib-copyのパスの指定方法に注意が必要だったのでメモします．</p>
+<p>指定フォルダ内のファイルを階層を維持しながら別の場所へコピーしたい場合<code>cp path/* dest/</code>のつもりで以下のように指定すると思った通りのパスへコピーしてくれません．</p>
+<pre><code>    <span class="method">copy:</span> {
+        <span class="method">dame1:</span> {
+            //ダメ
+            <span class="method">files:</span> [{<span class="method">src:</span> <span class="string">'path/**'</span>, <span class="method">dest:</span> <span class="string">'dest/'</span>}]
+        },
+        <span class="method">dame2:</span> {
+            // これもダメ
+            <span class="method">files:</span> [{<span class="method">expand:</span> <span class="keyword">true</span>, <span class="method">src:</span> [<span class="string">'path/**'</span>], <span class="method">dest:</span> <span class="string">'dest/'</span>}]
+        }
+    }</code></pre>
+<p>上記コードでは<code>dest/path/</code>内に階層を維持しながらファイルがコピーされてしまいます．</p>
+<p>正しくは，</p>
+<pre><code>    <span class="method">copy:</span> {
+        <span class="method">ok:</span> {
+            <span class="method">files:</span> [{<span class="method">expand:</span> <span class="keyword">true</span>, <span class="method">cwd:</span> <span class="string">'path/'</span>, <span class="method">src:</span> [**], <span class="method">dest:</span> <span class="string">'dest/'</span>}]
+        }
+    }</code></pre>
+<p>expandオプションがあると，もし中間のティレクトリが存在しなければ作成してくれます．（mkdirの-pオプション相当）ちなみにこれは<code>cwd</code>オプションでカレントディレクトリを指定した場合のみ有効なオプションのようです．</p>
+]]></description><link>http://iaarchiver.github.io/posts/2013-07-08-2117.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-08-2117.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Mon, 08 Jul 2013 12:17:00 GMT</pubDate></item><item><title><![CDATA[Ubuntuでmpdのセットアップ]]></title><description><![CDATA[<p>Ubuntuでmpdを利用する際にいくつか詰まるところがあったのでメモします．
+運用方法は，Ubuntu起動時にユーザ設定を読み込んでmpdを立ち上げておき，同Ubuntuのsonataで聞く，もしくはローカルネットワークにあるデバイスで聞く，という方法です．</p>
+<h2>まずはなによりインストール</h2>
+<pre><code>    $ su<span class="operator"><span class="keyword">do</span> apt-<span class="keyword">get</span> install mpd sonata</code></pre>
+<p>必要ならば<code>mpc</code>も合わせてインストールしておきます．</p>
+<h2><code>~/.mpdconf</code>を以下の例のように設定．</h2>
+<pre><code>    <span class="title">port</span> <span class="string">"6600"</span>
+    music_directory <span class="string">"~/Music/"</span>
+    playlist_directory <span class="string">"~/.mpd/playlists"</span>
+    db_file <span class="string">"~/.mpd/mpd.db"</span>
+    log_file <span class="string">"~/.mpd/mpd.log"</span>
+    audio_output {
+    <span class="title">type</span> <span class="string">"pulse"</span>
+    name <span class="string">"MPD"</span>
+    }</code></pre>
+<p><code>audio_output</code>はメディアサーバとして運用するなど特定の条件下で無い限り，<code>pulse</code>を選択するほうが良いです．</p>
+<h2>mpdを起動，そしてエラーメッセージ</h2>
+<pre><code>    $ mpd
+    Failed <span class="keyword">to</span> bind <span class="keyword">to</span> '[::]:<span class="number">6600</span>': Address already <span class="keyword">in</span> <span class="keyword">use</span></code></pre>
+<p>多くの場合このエラーメッセージが表示されます．（出ない場合でも再起動後に遭遇するかもしれません．）</p>
+<p>検索するとこのエラーの解決法について多くのスレッドが見つかりますが，詰まる人が多い理由は以下２つが原因と考えられます．</p>
+<ul>
+<li>エラーメッセージの通りに起動自体に失敗しているのか，設定の読み込みに失敗しているだけなのかわかりにくい．</li>
+<li>mpdの起動に成功しても（別のことが原因で）似たようなエラーメッセージが表示される．</li>
+</ul>
+<p>...要するに紛らわしいという話です．</p>
+<h2>まずはsonataでmpdをちゃんと起動できているか確認する</h2>
+<p>sonataを起動し，コンテクストメニューからPreference画面を開いて以下のように設定します．</p>
+<p><img src="img/sonata.jpg" alt="sonata"></p>
+<p>Portは<code>~/.mpdconf</code>で指定したものと同じ値を入力します．また，外部のデバイスから聞く場合はHostをmpdを走らせているマシンのローカルIPアドレスを指定する必要があります．</p>
+<p>ユーザ設定がきちんと読み込まれていればmpd起動の瞬間に，sonataのLibraryタブに<code>~/.mpdconf</code>で指定したフォルダ内の音楽ファイルが表示されます．</p>
+<h2><code>/etc/init.d/mpd</code>がデーモンとして起動時に実行される</h2>
+<p>mpdをインストールすると<code>/etc/init.d/mpd</code>が作成されて，起動時にスーパーユーザが
+デーモンとしてmpdを実行しています．そしてこのときユーザ設定（<code>~/.mpdconf</code>）ではなく管理者設定（<code>/etc/mpd.conf</code>）のみが読み込まれるため，このままではsonataを起動してもLibraryタブに先ほど指定した音楽ファイルが表示されません．</p>
+<p>このときは以下を実行してユーザ権限でmpdを再起動させます．</p>
+<pre><code>    <span class="char">$ </span>sudo service mpd stop
+    # もしくは <span class="char">$ </span>sudo /etc/init.d/mpd stop
+    <span class="char">$ </span>mpd
+    <span class="method">listen:</span> bind to <span class="string">'0.0.0.0:6600'</span> <span class="method">failed:</span> <span class="class">Address</span> already in use (continuing anyway, because binding to <span class="string">'[::]:6600'</span> succeeded)</code></pre>
+<p>さきほどと似たようなエラーメッセージが出てはいますが，sonataを起動してLibraryタブに指定した音楽フォルダの中身が反映されている場合，mpdは無事起動しています．</p>
+<blockquote>
+<p>このエラーメッセージは，ipv6でのバインドを試行して失敗したこと原因のようです．その後にIPv4でバインドに成功しているため問題はありませんが，このメッセージを消したい場合，<code>~/.mpdconf</code>に以下の設定を加えてIPv4でのバインドを指定してやります． <a href="https://wiki.archlinux.org/index.php/Music_Player_Daemon/Troubleshooting">https://wiki.archlinux.org/index.php/Music_Player_Daemon/Troubleshooting</a></p>
+<pre><code>       <span class="title">bind_to_address</span> <span class="string">"127.0.0.1"</span></code></pre>
+</blockquote>
+<h2>起動時にスーパーユーザがmpdを起動させないようにする</h2>
+<p>起動時にmpdをユーザ設定を読み込んだ上で起動するためには，まずスーパーユーザがmpdを起動させないようにする必要があります．これは<code>/etc/mpd.conf</code>にユーザ設定を直接書いてしまったり，<code>/etc/init.d/mpd</code>をリネームもしくは削除してしまうことで実現できてしまいますが，あまり望ましい方法ではありません．</p>
+<p><code>/etc/init.d</code>に登録されながらも自動起動をオフするには以下のようにします</p>
+<pre><code>    su<span class="operator"><span class="keyword">do</span> <span class="keyword">update</span>-rc.d mpd disable</code></pre>
+<p>オンにしたい場合は<code>disable</code>を<code>enable</code>に変えて実行します．</p>
+<p>これで自動起動がオフにできたら，DashメニューからStartupApplicationにmpdコマンドを追加することで，ログイン時にユーザ設定を読み込んだ状態でmpdを起動してくれます．</p>
+]]></description><link>http://iaarchiver.github.io/posts/2013-07-08-1730.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-08-1730.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Mon, 08 Jul 2013 08:30:00 GMT</pubDate></item></channel></rss>
