@@ -121,6 +121,6 @@ module.exports = function(grunt) {
 	}
 
 	// set default tasks
-	grunt.registerTask('build',['clean', 'less:build', 'concat', 'uglify', 'copy','markdown','connect','watch']);
+	grunt.registerTask('default',['clean', 'less:build', 'concat', 'uglify', 'copy','markdown','connect','watch']);
 	grunt.registerTask('dev',['clean', 'less:dev', 'concat', 'copy', 'markdown','connect','watch']);
 };
