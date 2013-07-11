@@ -28,18 +28,10 @@
       <ul class="sidebar-list">
       
         <li>
-          <a href="/posts/2013-07-09-1703.html">
-            yacreader（のソースコード）をいじる
-            <span class="date">2013-07-09 17:03</span>
-            <span class="tag">ubuntu,yacreader</span>
-          </a>
-        </li>
-      
-        <li>
-          <a href="/posts/2013-07-09-0731.html">
-            GuitarPro6を64bit環境にインストールする
-            <span class="date">2013-07-09 07:31</span>
-            <span class="tag">guitarpro,ubuntu</span>
+          <a href="/posts/2013-07-08-1730.html">
+            Ubuntuでmpdのセットアップ
+            <span class="date">2013-07-08 17:30</span>
+            <span class="tag">mpd,ubuntu</span>
           </a>
         </li>
       
@@ -52,10 +44,18 @@
         </li>
       
         <li>
-          <a href="/posts/2013-07-08-1730.html">
-            Ubuntuでmpdのセットアップ
-            <span class="date">2013-07-08 17:30</span>
-            <span class="tag">mpd,ubuntu</span>
+          <a href="/posts/2013-07-09-0731.html">
+            GuitarPro6を64bit環境にインストールする
+            <span class="date">2013-07-09 07:31</span>
+            <span class="tag">guitarpro,ubuntu</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2013-07-09-1703.html">
+            yacreader（のソースコード）をいじる
+            <span class="date">2013-07-09 17:03</span>
+            <span class="tag">ubuntu,yacreader</span>
           </a>
         </li>
       
@@ -68,19 +68,15 @@
     <!-- .logo -->
     <div class="logo">notions :: iaarchiver</div>
     <!-- [END] .logo -->
-    
-
-
-
-<div class="post">
-	<div class="post-info">
-	<h1><a href="/posts/2013-07-09-1703.html">yacreader（のソースコード）をいじる</a></h1>
-	<span class="date">July 9th 2013</span>
-	<span class="author"></span>
-	<hr>
-	</div>
-	<div class="post-content">
-		<p><a href="http://www.yacreader.com/">yacreader</a>とは<a href="http://comix.sourceforge.net/">comix</a>よりもリッチな見栄えのコミックビューアです．iPhone版もリリースされて開発が活発なので利用してみました．</p>
+    <div class="post">
+  <div class="post-info">
+  <h1><a href="/posts/2013-07-09-1703.html">yacreader（のソースコード）をいじる</a></h1>
+  <span class="date">July 9th 2013</span>
+  <span class="author"></span>
+  <hr>
+  </div>
+  <div class="post-content">
+    <p><a href="http://www.yacreader.com/">yacreader</a>とは<a href="http://comix.sourceforge.net/">comix</a>よりもリッチな見栄えのコミックビューアです．iPhone版もリリースされて開発が活発なので利用してみました．</p>
 <p>それでもまだ少し機能が足らないところがあったのでソースをいじったのでメモ．</p>
 <h2>yacreaderのダウンロード</h2>
 <p>Linux版ではlibpoppler-qt4が必要です．予め<code>sudo apt-get install libpoppler-qt4-dev</code>でインストールしておきます．本体は<a href="http://www.yacreader.com/downloads">こちら</a>からダウンロードすることができます．</p>
@@ -237,172 +233,27 @@
 </ol>
 <p>ソースコードをいじったら再度<code>./compileX11.sh</code>を実行してコンパイルをすると変化が確認できます．</p>
 
-	</div>
+  </div>
+
+  <div class="navigation">
+      
+      
+        <span class="older"><a href="/posts/2013-07-09-0731.html">older&nbsp;&#8674;</a></span>
+      
+    </div>
+  <div class="comments">
+    
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        window.disqus_identifier="";
+        window.disqus_url="http://iaarchiver.github.io/posts/2013-07-09-1703.html";
+        window.disqus_title="yacreader（のソースコード）をいじる";
+      </script>
+        <script type="text/javascript" src="http://disqus.com/forums/iaarchiver/embed.js"></script>
+        <noscript><a href="http://iaarchiver.disqus.com/?url=ref">View the discussion thread.</a></noscript>
+    
+  </div>
 </div>
-<hr>
-
-
-
-
-<div class="post">
-	<div class="post-info">
-	<h1><a href="/posts/2013-07-09-0731.html">GuitarPro6を64bit環境にインストールする</a></h1>
-	<span class="date">July 9th 2013</span>
-	<span class="author"></span>
-	<hr>
-	</div>
-	<div class="post-content">
-		<p>正式にサポートされているのは32bitマシンだけなのですが，無理やりインストールできそうでしたのでやってみました．</p>
-<ol>
-<li><h3>gp6-full-linux-*.debファイルを用意</h3>
-<p>linux用インストーラを<a href="http://www.guitar-pro.com/">http://www.guitar-pro.com/</a>のサポートページからダウンロードします．（日本で代理販売をしているイーフロンティアではLinux版は元々サポートしていないので本家のサポートページでライセンスを登録する必要があります．）</p>
-</li>
-<li><h3>依存関係を解決</h3>
-<p>依存関係にあるライブラリを確認します．</p>
-<pre><code> <span class="comment">$</span> <span class="comment">dpkg</span> <span class="literal">-</span><span class="comment">I</span> <span class="comment">gp6</span>-<span class="comment">full</span>-<span class="comment">linux</span>-<span class="comment">r11553</span>.<span class="comment">deb</span>        </code></pre>
-<p>depends欄に書かれているものをSynapticsもしくは<code>$ sudo apt-get install ...</code>でインストールしておきます．</p>
-<blockquote>
-<p><strong><code>$ sudo dpkg -i gp6-full-linux-*.deb</code>でインストールしようとしてはダメ</strong><br />&#39;You have 1 broken package on your system! Use &quot;Broken&quot; filter to locate it&#39;というエラーがSynapticsで出るようになります．Edit &gt; Fix Broken Packagesを選択してApplyすると壊れたGP6パッケージを削除できます．（このときsudoが消せないというエラーが出ますがこれは無視しても大丈夫．）しかし，GP6が既にインストールできていた場合は，GP6の再インストールが必要になるので注意．</p>
-</blockquote>
-</li>
-<li><h3>/opt/へ本体をコピー</h3>
-<p>gp6-full-linux-*.debを解凍してGuitarPro6本体を<code>/opt/</code>へコピーします．</p>
-<pre><code> <span class="comment">$</span> <span class="comment">dpkg</span> <span class="literal">-</span><span class="comment">x</span> <span class="comment">gp6</span>-<span class="comment">full</span>-<span class="comment">linux</span>-<span class="comment">\*</span>.<span class="comment">deb</span> <span class="comment">~/temp</span>
- <span class="comment">$</span> <span class="comment">sudo</span> <span class="comment">cp</span> <span class="literal">-</span><span class="comment">R</span> <span class="comment">~/temp/opt/GuitarPro6</span> <span class="comment">/opt/</code></pre>
-<p>ちなみに.debファイルの解凍はArchiveManagerでもできます．</p>
-</li>
-<li><h3>getlib-all.debをインストール</h3>
-<p>getlibsは64bit環境に32bit用アプリをインストールする際に必要なライブラリをインストールするためのユーティリティソフト（らしい）です．現状ではlaunchpadでmaintainされていないようですが，<a href="http://jeffhendricks.net/?p=68">こちらのページ</a>からダウンロードできました．ダブルクリックでSoftwareCenterからインストールするか<code>dpkg -i getlibs-all.deb</code>でインストールします．</p>
-</li>
-<li><h3>getlibsする</h3>
-<p>以上が完了したら以下を実行します．</p>
-<pre><code> <span class="variable">$ </span>getlibs /opt/<span class="constant">GuitarPro</span>/<span class="constant">GuitarPro</span></code></pre>
-</li>
-<li><h3>GuitarPro6を起動</h3>
-<p>エラーなくgetlibsできたらGuitarPro6を起動します．</p>
-<pre><code> <span class="variable">$ </span>/opt/<span class="constant">GuitarPro</span>/launcher.sh</code></pre>
-<p>起動が確認できたらアップデータで最新のものへしてやりましょう．（アップデータの起動にエラーが出るときはgksudoがインストールされてない可能性があります．）</p>
-</li>
-<li><h3>エラーなど</h3>
-<ul>
-<li><p><strong>アップデータが起動しない</strong><br>: gksudoがインストールされていない可能性があります．</p>
-</li>
-<li><p><strong>アップデートしたら<code>./GuitarPro: /opt/GuitarPro6/./libz.so.1: version `ZLIB_1.2.3.3&#39; not found (required by /usr/lib/i386-linux-gnu/libxml2.so.2)</code>というエラーが出て起動しない</strong><br>  :<code>sudo rm /opt/GuitarPro6/libz.so.1</code>で消してやれば問題ないもよう．</p>
-</li>
-</ul>
-</li>
-</ol>
-<p>今のところ問題なく動いていますが，今後のアップデートによっては起動しなくなる可能性もあります．Soundbankのインストールに失敗する場合もあるらしく（Ubuntu13.04x86_64では無問題でした），そのWorkaroundが<a href="https://www.linux.com/community/blogs/128-desktops/494464">こちら</a>で紹介されています．</p>
-
-	</div>
-</div>
-<hr>
-
-
-
-
-<div class="post">
-	<div class="post-info">
-	<h1><a href="/posts/2013-07-08-2117.html">grunt-contrib-copyでのパス指定</a></h1>
-	<span class="date">July 8th 2013</span>
-	<span class="author"></span>
-	<hr>
-	</div>
-	<div class="post-content">
-		<p><a href="https://github.com/gruntjs/grunt-contrib-copy/issues/60">https://github.com/gruntjs/grunt-contrib-copy/issues/60</a></p>
-<p>GithubのIssueでも語られていますが，grunt-contrib-copyのパスの指定方法に注意が必要だったのでメモします．</p>
-<p>指定フォルダ内のファイルを階層を維持しながら別の場所へコピーしたい場合<code>cp path/* dest/</code>のつもりで以下のように指定すると思った通りのパスへコピーしてくれません．</p>
-<pre><code>    <span class="method">copy:</span> {
-        <span class="method">dame1:</span> {
-            //ダメ
-            <span class="method">files:</span> [{<span class="method">src:</span> <span class="string">'path/**'</span>, <span class="method">dest:</span> <span class="string">'dest/'</span>}]
-        },
-        <span class="method">dame2:</span> {
-            // これもダメ
-            <span class="method">files:</span> [{<span class="method">expand:</span> <span class="keyword">true</span>, <span class="method">src:</span> [<span class="string">'path/**'</span>], <span class="method">dest:</span> <span class="string">'dest/'</span>}]
-        }
-    }</code></pre>
-<p>上記コードでは<code>dest/path/</code>内に階層を維持しながらファイルがコピーされてしまいます．</p>
-<p>正しくは，</p>
-<pre><code>    <span class="method">copy:</span> {
-        <span class="method">ok:</span> {
-            <span class="method">files:</span> [{<span class="method">expand:</span> <span class="keyword">true</span>, <span class="method">cwd:</span> <span class="string">'path/'</span>, <span class="method">src:</span> [**], <span class="method">dest:</span> <span class="string">'dest/'</span>}]
-        }
-    }</code></pre>
-<p>expandオプションがあると，もし中間のティレクトリが存在しなければ作成してくれます．（mkdirの-pオプション相当）ちなみにこれは<code>cwd</code>オプションでカレントディレクトリを指定した場合のみ有効なオプションのようです．</p>
-
-	</div>
-</div>
-<hr>
-
-
-
-
-<div class="post">
-	<div class="post-info">
-	<h1><a href="/posts/2013-07-08-1730.html">Ubuntuでmpdのセットアップ</a></h1>
-	<span class="date">July 8th 2013</span>
-	<span class="author"></span>
-	<hr>
-	</div>
-	<div class="post-content">
-		<p>Ubuntuでmpdを利用する際にいくつか詰まるところがあったのでメモします．
-運用方法は，Ubuntu起動時にユーザ設定を読み込んでmpdを立ち上げておき，同Ubuntuのsonataで聞く，もしくはローカルネットワークにあるデバイスで聞く，という方法です．</p>
-<h2>まずはなによりインストール</h2>
-<pre><code>    $ su<span class="operator"><span class="keyword">do</span> apt-<span class="keyword">get</span> install mpd sonata</code></pre>
-<p>必要ならば<code>mpc</code>も合わせてインストールしておきます．</p>
-<h2><code>~/.mpdconf</code>を以下の例のように設定．</h2>
-<pre><code>    <span class="title">port</span> <span class="string">"6600"</span>
-    music_directory <span class="string">"~/Music/"</span>
-    playlist_directory <span class="string">"~/.mpd/playlists"</span>
-    db_file <span class="string">"~/.mpd/mpd.db"</span>
-    log_file <span class="string">"~/.mpd/mpd.log"</span>
-    audio_output {
-    <span class="title">type</span> <span class="string">"pulse"</span>
-    name <span class="string">"MPD"</span>
-    }</code></pre>
-<p><code>audio_output</code>はメディアサーバとして運用するなど特定の条件下で無い限り，<code>pulse</code>を選択するほうが良いです．</p>
-<h2>mpdを起動，そしてエラーメッセージ</h2>
-<pre><code>    $ mpd
-    Failed <span class="keyword">to</span> bind <span class="keyword">to</span> '[::]:<span class="number">6600</span>': Address already <span class="keyword">in</span> <span class="keyword">use</span></code></pre>
-<p>多くの場合このエラーメッセージが表示されます．（出ない場合でも再起動後に遭遇するかもしれません．）</p>
-<p>検索するとこのエラーの解決法について多くのスレッドが見つかりますが，詰まる人が多い理由は以下２つが原因と考えられます．</p>
-<ul>
-<li>エラーメッセージの通りに起動自体に失敗しているのか，設定の読み込みに失敗しているだけなのかわかりにくい．</li>
-<li>mpdの起動に成功しても（別のことが原因で）似たようなエラーメッセージが表示される．</li>
-</ul>
-<p>...要するに紛らわしいという話です．</p>
-<ol>
-<li><h3>sonataでmpdをちゃんと起動できているか確認する</h3>
-<p>sonataを起動し，コンテクストメニューからPreference画面を開いて以下のように設定します．<br><img src="/img/sonata.jpg" alt="sonata"><br>Portは<code>~/.mpdconf</code>で指定したものと同じ値を入力します．また，外部のデバイスから聞く場合はHostをmpdを走らせているマシンのローカルIPアドレスを指定する必要があります．ユーザ設定がきちんと読み込まれていればmpd起動の瞬間に，sonataのLibraryタブに<code>~/.mpdconf</code>で指定したフォルダ内の音楽ファイルが表示されます．</p>
-</li>
-<li><h3><code>/etc/init.d/mpd</code>がデーモンとして実行されているかどうか確認する</h3>
-<p>mpdをインストールすると<code>/etc/init.d/mpd</code>が作成されて，起動時にスーパーユーザが
-デーモンとしてmpdを実行しています．そしてこのときユーザ設定（<code>~/.mpdconf</code>）ではなく管理者設定（<code>/etc/mpd.conf</code>）のみが読み込まれるため，このままではsonataを起動してもLibraryタブに先ほど指定した音楽ファイルが表示されません．
-このときは以下を実行してユーザ権限でmpdを再起動させます．</p>
-<pre><code> <span class="char">$ </span>sudo service mpd stop
- # もしくは <span class="char">$ </span>sudo /etc/init.d/mpd stop
- <span class="char">$ </span>mpd
- <span class="method">listen:</span> bind to <span class="string">'0.0.0.0:6600'</span> <span class="method">failed:</span> <span class="class">Address</span> already in use (continuing anyway, because binding to <span class="string">'[::]:6600'</span> succeeded)</code></pre>
-<p>さきほどと似たようなエラーメッセージが出てはいますが，sonataを起動してLibraryタブに指定した音楽フォルダの中身が反映されている場合，mpdは無事起動しています．</p>
-<blockquote>
-<p>このエラーメッセージは，ipv6でのバインドを試行して失敗したこと原因のようです．その後にIPv4でバインドに成功しているため問題はありませんが，このメッセージを消したい場合，<code>~/.mpdconf</code>に以下の設定を加えてIPv4でのバインドを指定してやります．<br> 参考：<a href="https://wiki.archlinux.org/index.php/Music_Player_Daemon/Troubleshooting">https://wiki.archlinux.org/index.php/Music_Player_Daemon/Troubleshooting</a></p>
-<pre><code> <span class="title">bind_to_address</span> <span class="string">"127.0.0.1"</span></code></pre>
-</blockquote>
-</li>
-<li><h3>起動時にスーパーユーザがmpdを起動させないようにする</h3>
-<p>起動時にmpdをユーザ設定を読み込んだ上で起動するためには，まずスーパーユーザがmpdを起動させないようにする必要があります．これは<code>/etc/mpd.conf</code>にユーザ設定を直接書いてしまったり，<code>/etc/init.d/mpd</code>をリネームもしくは削除してしまうことで実現できてしまいますが，あまり望ましい方法ではありません．<code>/etc/init.d</code>に登録されながらも自動起動をオフするには以下のようにします</p>
-<pre><code> su<span class="operator"><span class="keyword">do</span> <span class="keyword">update</span>-rc.d mpd disable</code></pre>
-<p>オンにしたい場合は<code>disable</code>を<code>enable</code>に変えて実行します．</p>
-</li>
-</ol>
-<p>これで自動起動がオフにできたら，DashメニューからStartupApplicationにmpdコマンドを追加することで，ログイン時にユーザ設定を読み込んだ状態でmpdを起動してくれます．</p>
-
-	</div>
-</div>
-<hr>
-
-
 
 
       <div class="footer">

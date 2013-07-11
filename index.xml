@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[notions:iaarchiver]]></title><description><![CDATA[blog where I write notions]]></description><link>http://iaarchiver.github.io</link><generator>NodeJS RSS Module</generator><lastBuildDate>Tue, 09 Jul 2013 12:30:38 GMT</lastBuildDate><atom:link href="http://iaarchiver.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[Ubuntuでmpdのセットアップ]]></title><description><![CDATA[<p>Ubuntuでmpdを利用する際にいくつか詰まるところがあったのでメモします．
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[notions:iaarchiver]]></title><description><![CDATA[blog where I write notions]]></description><link>http://iaarchiver.github.io</link><generator>NodeJS RSS Module</generator><lastBuildDate>Wed, 10 Jul 2013 14:34:13 GMT</lastBuildDate><atom:link href="http://iaarchiver.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[Ubuntuでmpdのセットアップ]]></title><description><![CDATA[<p>Ubuntuでmpdを利用する際にいくつか詰まるところがあったのでメモします．
 運用方法は，Ubuntu起動時にユーザ設定を読み込んでmpdを立ち上げておき，同Ubuntuのsonataで聞く，もしくはローカルネットワークにあるデバイスで聞く，という方法です．</p>
 <h2>まずはなによりインストール</h2>
 <pre><code>    $ su<span class="operator"><span class="keyword">do</span> apt-<span class="keyword">get</span> install mpd sonata</code></pre>
@@ -191,49 +191,80 @@
          }</code></pre>
 </li>
 <li><h3>カバーが横長の場合は90度回転して欲しい</h3>
-<p><code>yacreader/common/pictureflow.cpp</code>の600行あたりを以下のように変更(<strong>*この変更はhardwareAccelarationなしのときのみ有効</strong>)</p>
-<pre><code> static QImage* prepareSurface(const QImage* slideImage, int w, int h, QRgb bgcolor,
- PictureFlow::ReflectionEffect reflectionEffect)
- {
+<ul>
+<li><p><strong>hardwareAccelarationなしのとき</strong><br><code>yacreader/common/pictureflow.cpp</code>の600行あたりを以下のように変更</p>
+<pre><code>  static QImage* prepareSurface(const QImage* slideImage, int w, int h, QRgb bgcolor,
+  PictureFlow::ReflectionEffect reflectionEffect)
+  {
 
-       int iw,ih<span class="comment">;</span>
-   iw = slideImage-&gt;width()<span class="comment">;</span>
-   ih = slideImage-&gt;height()<span class="comment">;</span>
-   int psw,psh<span class="comment">;</span>
-   if(iw&gt;ih)
-   {
- -      psw = w<span class="comment">;</span>
- -      psh = w * (<span class="number">1.0</span>*ih/iw)<span class="comment">;</span>
- +      psh = w<span class="comment">;</span>
- +      psw = w * (<span class="number">1.0</span>*ih/iw)<span class="comment">;</span>
-   }
-   else
-   {
-       int h1=h<span class="comment">;</span>
-       psw = h1 * (<span class="number">1.0</span>*iw/ih)<span class="comment">;</span>
-       psh = h1<span class="comment">;</span>
+        int iw,ih<span class="comment">;</span>
+    iw = slideImage-&gt;width()<span class="comment">;</span>
+    ih = slideImage-&gt;height()<span class="comment">;</span>
+    int psw,psh<span class="comment">;</span>
+    if(iw&gt;ih)
+    {
+  -      psw = w<span class="comment">;</span>
+  -      psh = w * (<span class="number">1.0</span>*ih/iw)<span class="comment">;</span>
+  +      int w1 = w<span class="comment">;</span>
+  +      psh = w1 * (<span class="number">1.0</span>*iw/ih)<span class="comment">;</span>
+  +      psw = w1<span class="comment">;</span>
 
-       while(psw&gt;w)
-       {
-             h1-=<span class="number">2</span><span class="comment">;</span>
-            psw = h1 * (<span class="number">1.0</span>*iw/ih)<span class="comment">;</span>
-            psh = h1<span class="comment">;</span>
-       }
-   }
-   w = psw<span class="comment">;</span>
+  +      while(psh&gt;h)
+  +      {
+  +        w1-=<span class="number">2</span><span class="comment">;</span>
+  +        psh= w1* (<span class="number">1.0</span>*iw/ih)<span class="comment">;</span>
+  +        psw = w1<span class="comment">;</span>
+  +      }
+    }
+    else
+    {
+        int h1=h<span class="comment">;</span>
+        psw = h1 * (<span class="number">1.0</span>*iw/ih)<span class="comment">;</span>
+        psh = h1<span class="comment">;</span>
 
- <span class="preprocessor">#ifdef PICTUREFLOW_QT4</span>
-   Qt::TransformationMode mode = Qt::SmoothTransformation<span class="comment">;</span>
- -   QImage img = slideImage-&gt;scaled(psw, psh, Qt::IgnoreAspectRatio, mode)<span class="comment">;</span>
- +  QImage img<span class="comment">;</span>
- +  if (iw &gt; ih){
- +    QTransform rot<span class="comment">;</span>
- +    rot<span class="preprocessor">.rotate</span>(<span class="number">90</span>)<span class="comment">;</span>
- +    img = slideImage-&gt;transformed(rot, Qt::SmoothTransformation)<span class="comment">;</span>
- +    img = img<span class="preprocessor">.scaled</span>(psw, psh, Qt::IgnoreAspectRatio, mode)<span class="comment">;</span>
- +  }else{
- +    img = slideImage-&gt;scaled(psw, psh, Qt::IgnoreAspectRatio, mode)<span class="comment">;</span>
- +  }</code></pre>
+        while(psw&gt;w)
+        {
+              h1-=<span class="number">2</span><span class="comment">;</span>
+             psw = h1 * (<span class="number">1.0</span>*iw/ih)<span class="comment">;</span>
+             psh = h1<span class="comment">;</span>
+        }
+    }
+    w = psw<span class="comment">;</span>
+
+  <span class="preprocessor">#ifdef PICTUREFLOW_QT4</span>
+    Qt::TransformationMode mode = Qt::SmoothTransformation<span class="comment">;</span>
+  -   QImage img = slideImage-&gt;scaled(psw, psh, Qt::IgnoreAspectRatio, mode)<span class="comment">;</span>
+  +  QImage img<span class="comment">;</span>
+  +  if (iw &gt; ih){
+  +    QTransform rot<span class="comment">;</span>
+  +    rot<span class="preprocessor">.rotate</span>(<span class="number">90</span>)<span class="comment">;</span>
+  +    img = slideImage-&gt;transformed(rot, Qt::SmoothTransformation)<span class="comment">;</span>
+  +    img = img<span class="preprocessor">.scaled</span>(psw, psh, Qt::IgnoreAspectRatio, mode)<span class="comment">;</span>
+  +  }else{
+  +    img = slideImage-&gt;scaled(psw, psh, Qt::IgnoreAspectRatio, mode)<span class="comment">;</span>
+  +  }</code></pre>
+</li>
+<li><p><strong> hardwareAccelarationありのとき</strong><br><code>common/yacreader_flow_gl.cpp</code>の380行付近を以下のように変更</p>
+<pre><code>  void YACReaderFlowGL::drawCover(CFImage <span class="variable">*CF</span>)
+  {
+      float w = CF-&gt;width;
+      float h = CF-&gt;height;
+
+  +    w = <span class="number">1.8</span>f<span class="variable">*(</span>w/h);
+  +    h = <span class="number">1.8</span>f;</code></pre>
+<p>同ファイルの1240行付近を以下のように変更</p>
+<pre><code>  <span class="comment">//</span>-<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>
+  <span class="comment">//ImageLoader</span>
+  <span class="comment">//</span>-<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>
+  <span class="comment">QImage</span> <span class="comment">ImageLoaderGL::loadImage(const</span> <span class="comment">QString&amp;</span> <span class="comment">fileName)</span>
+  <span class="comment">{</span>
+      <span class="comment">QImage</span> <span class="comment">image;</span>
+      <span class="comment">bool</span> <span class="comment">result</span> <span class="comment">=</span> <span class="comment">image</span>.<span class="comment">load(fileName);</span>
+
+  <span class="literal">+</span>    <span class="comment">if</span> <span class="comment">(image</span>.<span class="comment">width()</span> &gt; <span class="comment">image</span>.<span class="comment">height())</span>
+  <span class="literal">+</span>        <span class="comment">image</span> <span class="comment">=</span> <span class="comment">image</span>.<span class="comment">transformed(QMatrix()</span>.<span class="comment">rotate(90));</code></pre>
+</li>
+</ul>
 </li>
 </ol>
 <p>ソースコードをいじったら再度<code>./compileX11.sh</code>を実行してコンパイルをすると変化が確認できます．</p>
