@@ -26,6 +26,8 @@
         <li><a href="#" class="show-archive"><span class="websymbolsliga icon folder"></span></a></li>
       </ul>
       <hr>
+      <input id="sidebar-search" placeholder=" search keywords..." />
+      <hr>
       <ul class="sidebar-list">
       
         <li>
@@ -57,6 +59,30 @@
             yacreader（のソースコード）をいじる
             <span class="date">2013-07-09 17:03</span>
             <span class="tag">ubuntu,yacreader</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2013-07-11-2000.html">
+            Ubuntu13.04インストールおぼえがき
+            <span class="date">2013-07-11 20:00</span>
+            <span class="tag">ubuntu</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2013-07-11-2152.html">
+            Ubuntu13.04でTimeCapsuleをマウントする
+            <span class="date">2013-07-11 21:52</span>
+            <span class="tag">ubuntu,timecapsule</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2013-07-29-0152.html">
+            LinuxからDayOneの読み書きを行う
+            <span class="date">2013-07-29 01:52</span>
+            <span class="tag">dayone,jrnl</span>
           </a>
         </li>
       
@@ -112,9 +138,12 @@
  -    painter<span class="preprocessor">.drawImage</span>(QRect(<span class="number">0</span>,<span class="number">0</span>,width1,totalHeight),img)<span class="comment">;</span>
  -    if(!img2<span class="preprocessor">.isNull</span>())
  -        painter<span class="preprocessor">.drawImage</span>(QRect(width1,<span class="number">0</span>,width2,totalHeight),img2)<span class="comment">;</span>
- +    if(!img2<span class="preprocessor">.isNull</span>())
- +        painter<span class="preprocessor">.drawImage</span>(QRect(<span class="number">0</span>,<span class="number">0</span>,width1,totalHeight),img2)<span class="comment">;</span>
- +    painter<span class="preprocessor">.drawImage</span>(QRect(width1,<span class="number">0</span>,width2,totalHeight),img)<span class="comment">;</span>
+ +    if(!img2<span class="preprocessor">.isNull</span>()){
+ +        painter<span class="preprocessor">.drawImage</span>(QRect(<span class="number">0</span>,<span class="number">0</span>,width2,totalHeight),img2)<span class="comment">;</span>
+ +        painter<span class="preprocessor">.drawImage</span>(QRect(width2,<span class="number">0</span>,width1,totalHeight),img)<span class="comment">;</span>
+ +    }else{
+ +        painter<span class="preprocessor">.drawImage</span>(QRect(<span class="number">0</span>,<span class="number">0</span>,width1,totalHeight),img)<span class="comment">;</span>
+ +    }
      painter<span class="preprocessor">.end</span>()<span class="comment">;</span></code></pre>
 </li>
 <li><h3>ページ移動に必要なホイールの移動量を２目盛りから1目盛りへ変えたい．</h3>
@@ -237,6 +266,8 @@
   </div>
 
   <div class="navigation">
+      
+        <span class="newer"><a href="/posts/2013-07-11-2000.html">&#8672;&nbsp;newer</a></span>
       
       
         <span class="older"><a href="/posts/2013-07-09-0731.html">older&nbsp;&#8674;</a></span>
