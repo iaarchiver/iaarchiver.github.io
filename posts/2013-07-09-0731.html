@@ -79,14 +79,6 @@
         </li>
       
         <li>
-          <a href="/posts/2013-07-16-1029.html">
-            Ubuntu13.04にMaya2014をインストール
-            <span class="date">2013-07-16 10:29</span>
-            <span class="tag">ubuntu,maya</span>
-          </a>
-        </li>
-      
-        <li>
           <a href="/posts/2013-07-29-0152.html">
             LinuxからDayOneの読み書きを行う
             <span class="date">2013-07-29 01:52</span>
@@ -144,9 +136,13 @@
 </li>
 <li><h3>エラーなど</h3>
 <ul>
-<li><p><strong>アップデータが起動しない</strong><br>: gksudoがインストールされていない可能性があります．</p>
+<li><p><strong><code>/opt/GuitarPro6/launcher.sh</code>が以下のエラーメッセージを出して起動しない</strong>  </p>
+<pre><code>./GuitarPro: error <span class="keyword">while</span> loading <span class="keyword">shared</span> libraries: libportaudio.so<span class="number">.2</span>: cannot <span class="keyword">open</span> <span class="keyword">shared</span> object <span class="keyword">file</span>: No such <span class="keyword">file</span> <span class="keyword">or</span> directory</code></pre>
+<p>getlibsがlibportaudio2をカバーできていないことが原因．<code>sudo apt-get install libportaudio2:i386</code>で個別にインストールしてやります．</p>
 </li>
-<li><p><strong>アップデートしたら<code>./GuitarPro: /opt/GuitarPro6/./libz.so.1: version `ZLIB_1.2.3.3&#39; not found (required by /usr/lib/i386-linux-gnu/libxml2.so.2)</code>というエラーが出て起動しない</strong><br>  :<code>sudo rm /opt/GuitarPro6/libz.so.1</code>で消してやれば問題ないもよう．</p>
+<li><p><strong>アップデータが起動しない</strong><br>gksudoがインストールされていない可能性があります．</p>
+</li>
+<li><p><strong>アップデートしたら<code>./GuitarPro: /opt/GuitarPro6/./libz.so.1: version `ZLIB_1.2.3.3&#39; not found (required by /usr/lib/i386-linux-gnu/libxml2.so.2)</code>というエラーが出て起動しない</strong><br>  sudo rm /opt/GuitarPro6/libz.so.1`で消してやれば問題ないもよう．</p>
 </li>
 </ul>
 </li>

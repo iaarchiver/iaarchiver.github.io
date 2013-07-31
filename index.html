@@ -39,14 +39,6 @@
         </li>
       
         <li>
-          <a href="/posts/2013-07-16-1029.html">
-            Ubuntu13.04にMaya2014をインストール
-            <span class="date">2013-07-16 10:29</span>
-            <span class="tag">ubuntu,maya</span>
-          </a>
-        </li>
-      
-        <li>
           <a href="/posts/2013-07-11-2152.html">
             Ubuntu13.04でTimeCapsuleをマウントする
             <span class="date">2013-07-11 21:52</span>
@@ -177,25 +169,6 @@ KeyError: <span class="attribute">'Time</span> Zone'</code></pre>
 
 <div class="post">
 	<div class="post-info">
-	<h1><a href="/posts/2013-07-16-1029.html">Ubuntu13.04にMaya2014をインストール</a></h1>
-	<span class="date">July 16th 2013</span>
-	<span class="author"></span>
-	<hr>
-	</div>
-	<div class="post-content">
-		<p>Ubuntu13.04(64bit)にMaya2014をインストールする方法のメモ．</p>
-<p>**学生版無償ライセンスを使用するため，<a href="http://students.autodesk.com/">こちら</a>で予め用意しておく必要があります．</p>
-<h2>インストールスクリプトを用意</h2>
-
-	</div>
-</div>
-<hr>
-
-
-
-
-<div class="post">
-	<div class="post-info">
 	<h1><a href="/posts/2013-07-11-2152.html">Ubuntu13.04でTimeCapsuleをマウントする</a></h1>
 	<span class="date">July 11th 2013</span>
 	<span class="author"></span>
@@ -282,7 +255,7 @@ KeyError: <span class="attribute">'Time</span> Zone'</code></pre>
 <li><p><a href="https://code.google.com/p/realtek-8188cus-wireless-drivers-3444749-ubuntu-1304/downloads/list">こちら</a>からrtl8192cu-tjp-dkms_1.6_all.debをダウンロードしたらインストールする．</p>
 <pre><code>  dpkg -<span class="built_in">i</span> ~/Downloads/rtl8192cu-tjp-<span class="transposed_variable">dkms_1.</span><span class="number">6</span><span class="transposed_variable">_all.</span>deb</code></pre>
 </li>
-<li><p><code>/etc/modprobe.d</code>に以下を加えて，Ubuntuが用意したドライバを使用させないようにする．</p>
+<li><p><code>/etc/modprobe.d/blacklist.conf</code>に以下を加えて，Ubuntuが用意したドライバを使用させないようにする．</p>
 <pre><code>  <span class="comment"># Blacklist native RealTek 8188CUs drivers</span>
   <span class="title">blacklist</span> rtl8192cu
   blacklist rtl8192c_common
@@ -301,7 +274,7 @@ KeyError: <span class="attribute">'Time</span> Zone'</code></pre>
 <h2>burg(ブートローダ)とPlymouth(スプラッシュスクリーン)を設定</h2>
 <ul>
 <li><h3>burgを設定する</h3>
-<a href="http://iaarchiver.net/4#post4">burgのインストール</a></li>
+<a href="http://iaarchiver.net/post/2011-12-29-1200">burgのインストール</a></li>
 </ul>
 <pre><code>$ su<span class="operator"><span class="keyword">do</span> <span class="keyword">add</span>-apt-repository ppa:n-muench/burg
 $ sudo apt-<span class="keyword">get</span> <span class="keyword">update</span>
@@ -314,9 +287,7 @@ $ sudo <span class="keyword">update</span>-burg</code></pre>
 <p>burgのローディング画面で<code>t</code>を押すとテーマの選択ができます．（その他コマンドは<code>h</code>で確認できます．）独自にテーマを用意する場合は<code>/boot/burg/themes</code>に置いておく必要があります．</p>
 <ul>
 <li><h3>Plymouthを設定する</h3>
-<www.ubunturoot.com/2010/08/paw-ubuntu-and-os-x-like-plymouth-theme.html>
-
-</li>
+<a href="http://www.ubunturoot.com/2010/08/paw-ubuntu-and-os-x-like-plymouth-theme.html">http://www.ubunturoot.com/2010/08/paw-ubuntu-and-os-x-like-plymouth-theme.html</a></li>
 </ul>
 <p>テーマのインストールと設定は上記参照．</p>
 <p><strong>テーマが適用されない場合</strong><br>解像度が対応していないことが原因である可能性があります．そこで予め解像度を指定してやります．</p>
@@ -550,9 +521,13 @@ $ sudo <span class="keyword">update</span>-burg</code></pre>
 </li>
 <li><h3>エラーなど</h3>
 <ul>
-<li><p><strong>アップデータが起動しない</strong><br>: gksudoがインストールされていない可能性があります．</p>
+<li><p><strong><code>/opt/GuitarPro6/launcher.sh</code>が以下のエラーメッセージを出して起動しない</strong>  </p>
+<pre><code>./GuitarPro: error <span class="keyword">while</span> loading <span class="keyword">shared</span> libraries: libportaudio.so<span class="number">.2</span>: cannot <span class="keyword">open</span> <span class="keyword">shared</span> object <span class="keyword">file</span>: No such <span class="keyword">file</span> <span class="keyword">or</span> directory</code></pre>
+<p>getlibsがlibportaudio2をカバーできていないことが原因．<code>sudo apt-get install libportaudio2:i386</code>で個別にインストールしてやります．</p>
 </li>
-<li><p><strong>アップデートしたら<code>./GuitarPro: /opt/GuitarPro6/./libz.so.1: version `ZLIB_1.2.3.3&#39; not found (required by /usr/lib/i386-linux-gnu/libxml2.so.2)</code>というエラーが出て起動しない</strong><br>  :<code>sudo rm /opt/GuitarPro6/libz.so.1</code>で消してやれば問題ないもよう．</p>
+<li><p><strong>アップデータが起動しない</strong><br>gksudoがインストールされていない可能性があります．</p>
+</li>
+<li><p><strong>アップデートしたら<code>./GuitarPro: /opt/GuitarPro6/./libz.so.1: version `ZLIB_1.2.3.3&#39; not found (required by /usr/lib/i386-linux-gnu/libxml2.so.2)</code>というエラーが出て起動しない</strong><br>  sudo rm /opt/GuitarPro6/libz.so.1`で消してやれば問題ないもよう．</p>
 </li>
 </ul>
 </li>
