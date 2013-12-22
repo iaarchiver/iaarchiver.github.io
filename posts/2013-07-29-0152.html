@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" type="image/x-icon" href="https://github.com/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/style.css" media="all" />
+    <link rel="alternate" type="application/rss+xml" title="notions:iaarchiver - feed" href="/index.xml" />
+    <title>notions:iaarchiver</title> 
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-42298279-1', 'iaarchiver.github.io');
+      ga('send', 'pageview');
+    </script>
+</head>
+  <body>
+    <!-- .sidebar -->
+    <div class="sidebar">
+      <ul class="sidebar-nav">
+        <li><a href="/"><span class="websymbolsliga icon boxedlist"></span></a></li>
+        <li><a href="#" class="show-archive"><span class="websymbolsliga icon folder"></span></a></li>
+      </ul>
+      <hr>
+      <input id="sidebar-search" placeholder=" search keywords..." />
+      <hr>
+      <ul class="sidebar-list">
+      
+        <li>
+          <a href="/posts/2013-07-08-1730.html">
+            Ubuntuでmpdのセットアップ
+            <span class="date">2013-07-08 17:30</span>
+            <span class="tag">mpd,ubuntu</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2013-07-08-2117.html">
+            grunt-contrib-copyでのパス指定
+            <span class="date">2013-07-08 21:17</span>
+            <span class="tag">grunt,js</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2013-07-09-0731.html">
+            GuitarPro6を64bit環境にインストールする
+            <span class="date">2013-07-09 07:31</span>
+            <span class="tag">guitarpro,ubuntu</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2013-07-09-1703.html">
+            yacreader（のソースコード）をいじる
+            <span class="date">2013-07-09 17:03</span>
+            <span class="tag">ubuntu,yacreader</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2013-07-11-2000.html">
+            Ubuntu13.04インストールおぼえがき
+            <span class="date">2013-07-11 20:00</span>
+            <span class="tag">ubuntu</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2013-07-11-2152.html">
+            Ubuntu13.04でTimeCapsuleをマウントする
+            <span class="date">2013-07-11 21:52</span>
+            <span class="tag">ubuntu,timecapsule</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2013-07-29-0152.html">
+            LinuxからDayOneの読み書きを行う
+            <span class="date">2013-07-29 01:52</span>
+            <span class="tag">dayone,jrnl</span>
+          </a>
+        </li>
+      
+      </ul>
+    </div>
+    <!-- [END] .sidebar -->
+
+    <!-- .wrapper -->
+    <div class="wrapper" style="height:100%">
+    <!-- .logo -->
+    <div class="logo">notions :: iaarchiver</div>
+    <!-- [END] .logo -->
+    <div class="post">
+  <div class="post-info">
+  <h1><a href="/posts/2013-07-29-0152.html">LinuxからDayOneの読み書きを行う</a></h1>
+  <span class="date">July 29th 2013</span>
+  <span class="author"></span>
+  <hr>
+  </div>
+  <div class="post-content">
+    <p>コマンドラインからテキストをジャーナリングできる<a href="http://maebert.github.io/jrnl/">jrnl</a>というアプリを使用してDayOneのエントリーを読み書きする方法のメモ．</p>
+<p>MacであればDayOneオフィシャルの<a href="http://dayoneapp.com/tools/">コマンドラインツール</a>が使用できるので，それ以外の端末からDayOneエントリーを操作したい人向けです．</p>
+<h2>jrnlのインストールと起動</h2>
+<pre><code>$ su<span class="operator"><span class="keyword">do</span> pip install jrnl
+$ jrnl
+Path <span class="keyword">to</span> your journal file (leave blank <span class="keyword">for</span> ~/journal.txt): 
+Enter password <span class="keyword">for</span> journal (leave blank <span class="keyword">for</span> <span class="keyword">no</span> encryption): 
+[Compose Entry] </code></pre>
+<p>初回起動時に保存先とパスワードを聞かれますが無入力で良いです．この設定は<code>~/.jrnl_config</code>にて変更が可能です．</p>
+<h2>DayOneのエントリーを統合する</h2>
+<p><code>~/.jrnl_config</code>の<code>journals</code>キーを以下のように変更．</p>
+<pre><code>&quot;journals&quot;: {
+    &quot;default&quot;: &quot;/path/to/Journal.dayone/&quot;
+}</code></pre>
+<p><code>Journal.dayone</code>はDayOneのエントリーを保存しているフォルダであり，DayOneの同期先によって異なります．例えばDropboxで同期している場合は<code>/path/to/Dropbox/Apps/Day\ One/Journal.dayone</code>のようになります．</p>
+<h2>KeyError:&#39;Time Zone&#39;が出るとき</h2>
+<p>最新のバージョンのDayOneではすべての新規エントリーにタイムゾーンが付与される仕様になっていますが，古いエントリーにタイムゾーンの情報が付与されていないとき，それが原因でエラーが出ます．（jrnl1.4.2で確認．今後修正されるかも）</p>
+<pre><code><span class="keyword">File</span> <span class="string">"/usr/local/lib/python2.7/dist-packages/jrnl/Journal.py"</span>, line <span class="number">316</span>, <span class="keyword">in</span> parse
+timezone = pytz.timezone(dict_entry[<span class="attribute">'Time</span> Zone'])
+KeyError: <span class="attribute">'Time</span> Zone'</code></pre>
+<p>jrnlを起動した際に上のようなエラーが出るときは<code>sudo emacs /usr/local/lib/python2.7/dist-packages/jrnl/Journal.py</code>でエディタを開き，以下のように編集します．</p>
+<pre><code><span class="function"><span class="keyword">def</span> <span class="title">parse</span><span class="params">(self, filenames)</span>:</span>
+    <span class="string">"""Instead of parsing a string into an entry, this method will take a list
+    of filenames, interpret each as a plist file and create a new entry from that."""</span>
+    self.entries = []
+    <span class="keyword">for</span> filename <span class="keyword">in</span> filenames:
+        <span class="keyword">with</span> open(filename, <span class="string">'rb'</span>) <span class="keyword">as</span> plist_entry:
+            dict_entry = plistlib.readPlist(plist_entry)
+            <span class="keyword">try</span>:
+                timezone = pytz.timezone(dict_entry[<span class="string">'Time Zone'</span>])
+  -         <span class="keyword">except</span> pytz.exceptions.UnknownTimeZoneError:
+  +         <span class="keyword">except</span> :
+                timezone = pytz.timezone(util.get_local_timezone())</code></pre>
+<h2>jrnl1.4.2でできること</h2>
+<ul>
+<li>最近追加したエントリーを３件表示<pre><code>  <span class="title">jrnl</span> -n <span class="number">3</span></code></pre>
+</li>
+<li>すべてのエントリーのタイトルのみ表示<pre><code>  <span class="title">jrnl</span> -short</code></pre>
+</li>
+<li>エントリーを追加<pre><code>  <span class="title">jrnl</span>
+  [Compose Entry]
+  <span class="comment"># Enterで入力終了</span></code></pre>
+</li>
+<li>日時とタグを指定してエントリーを追加<pre><code>  <span class="title">jrnl</span> yesterday: 鳩のえさやり @公園</code></pre>
+</li>
+</ul>
+<h2>jrnl1.4.2でできないこと</h2>
+<ul>
+<li>過去エントリーの編集，削除（jrnlを経由せずに<code>Journal.dayone</code>フォルダー内の<code>.doentry</code>ファイルを直接編集/削除は可能ですが，同期したMacやiPhoneで操作したほうが良いです．）</li>
+<li>エントリーにメディア（画像，音声など）を追加する</li>
+<li>エントリーの付与されたメディアを表示する</li>
+</ul>
+
+  </div>
+
+  <div class="navigation">
+      
+      
+        <span class="older"><a href="/posts/2013-07-11-2152.html">older&nbsp;&#8674;</a></span>
+      
+    </div>
+  <div class="comments">
+    
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        window.disqus_identifier="";
+        window.disqus_url="http://iaarchiver.github.io/posts/2013-07-29-0152.html";
+        window.disqus_title="LinuxからDayOneの読み書きを行う";
+      </script>
+        <script type="text/javascript" src="http://disqus.com/forums/iaarchiver/embed.js"></script>
+        <noscript><a href="http://iaarchiver.disqus.com/?url=ref">View the discussion thread.</a></noscript>
+    
+  </div>
+</div>
+
+
+      <div class="footer">
+      Copyright iaarchiver, 2013.
+      </div>
+    </div>
+    <!-- [END] .wrapper -->
+
+    <!-- load JS -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="/scripts.js"></script>
+  </body>
+</html>
