@@ -1,4 +1,3 @@
-var replaceSnippet = require('./snippets').replaceSnippet;
 
 module.exports = function(grunt) {
 
@@ -66,7 +65,7 @@ module.exports = function(grunt) {
 					}
 			},
 			build: {
-				dest: '../', 
+				dest: '../',
 				context: {
 					js: "/scripts.js",
 					css: "/style.css"
@@ -80,7 +79,7 @@ module.exports = function(grunt) {
 				base: '../',
 				middleware: function (connect, options) {
 					return [
-						replaceSnippet, // replace HTML for liveReload
+						require('connect-livereload')(),
 						connect.static(require('path').resolve(options.base))
 					];
 				}
@@ -92,7 +91,7 @@ module.exports = function(grunt) {
 		watch: {
 			options: {
 				livereload: true,
-				nospawn: true
+				nospawn: false
 			},
 			less : {
 				files : ['../src/app/style/less/**/*.less'],
