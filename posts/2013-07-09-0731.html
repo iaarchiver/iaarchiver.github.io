@@ -105,10 +105,10 @@
   <div class="post-content">
     <p>正式にサポートされているのは32bitマシンだけなのですが，無理やりインストールできそうでしたのでやってみました．</p>
 <ol>
-<li><h3>gp6-full-linux-*.debファイルを用意</h3>
+<li><h3 id="gp6-full-linux-deb-">gp6-full-linux-*.debファイルを用意</h3>
 <p>linux用インストーラを<a href="http://www.guitar-pro.com/">http://www.guitar-pro.com/</a>のサポートページからダウンロードします．（日本で代理販売をしているイーフロンティアではLinux版は元々サポートしていないので本家のサポートページでライセンスを登録する必要があります．）</p>
 </li>
-<li><h3>依存関係を解決</h3>
+<li><h3 id="-">依存関係を解決</h3>
 <p>依存関係にあるライブラリを確認します．</p>
 <pre><code> <span class="comment">$</span> <span class="comment">dpkg</span> <span class="literal">-</span><span class="comment">I</span> <span class="comment">gp6</span>-<span class="comment">full</span>-<span class="comment">linux</span>-<span class="comment">r11553</span>.<span class="comment">deb</span>        </code></pre>
 <p>depends欄に書かれているものをSynapticsもしくは<code>$ sudo apt-get install ...</code>でインストールしておきます．</p>
@@ -116,25 +116,25 @@
 <p><strong><code>$ sudo dpkg -i gp6-full-linux-*.deb</code>でインストールしようとしてはダメ</strong><br />&#39;You have 1 broken package on your system! Use &quot;Broken&quot; filter to locate it&#39;というエラーがSynapticsで出るようになります．Edit &gt; Fix Broken Packagesを選択してApplyすると壊れたGP6パッケージを削除できます．（このときsudoが消せないというエラーが出ますがこれは無視しても大丈夫．）しかし，GP6が既にインストールできていた場合は，GP6の再インストールが必要になるので注意．</p>
 </blockquote>
 </li>
-<li><h3>/opt/へ本体をコピー</h3>
+<li><h3 id="-opt-">/opt/へ本体をコピー</h3>
 <p>gp6-full-linux-*.debを解凍してGuitarPro6本体を<code>/opt/</code>へコピーします．</p>
 <pre><code> <span class="comment">$</span> <span class="comment">dpkg</span> <span class="literal">-</span><span class="comment">x</span> <span class="comment">gp6</span>-<span class="comment">full</span>-<span class="comment">linux</span>-<span class="comment">\*</span>.<span class="comment">deb</span> <span class="comment">~/temp</span>
  <span class="comment">$</span> <span class="comment">sudo</span> <span class="comment">cp</span> <span class="literal">-</span><span class="comment">R</span> <span class="comment">~/temp/opt/GuitarPro6</span> <span class="comment">/opt/</code></pre>
 <p>ちなみに.debファイルの解凍はArchiveManagerでもできます．</p>
 </li>
-<li><h3>getlib-all.debをインストール</h3>
+<li><h3 id="getlib-all-deb-">getlib-all.debをインストール</h3>
 <p>getlibsは64bit環境に32bit用アプリをインストールする際に必要なライブラリをインストールするためのユーティリティソフト（らしい）です．現状ではlaunchpadでmaintainされていないようですが，<a href="http://jeffhendricks.net/?p=68">こちらのページ</a>からダウンロードできました．ダブルクリックでSoftwareCenterからインストールするか<code>dpkg -i getlibs-all.deb</code>でインストールします．</p>
 </li>
-<li><h3>getlibsする</h3>
+<li><h3 id="getlibs-">getlibsする</h3>
 <p>以上が完了したら以下を実行します．</p>
 <pre><code> <span class="variable">$ </span>getlibs /opt/<span class="constant">GuitarPro</span>/<span class="constant">GuitarPro</span></code></pre>
 </li>
-<li><h3>GuitarPro6を起動</h3>
+<li><h3 id="guitarpro6-">GuitarPro6を起動</h3>
 <p>エラーなくgetlibsできたらGuitarPro6を起動します．</p>
 <pre><code> <span class="variable">$ </span>/opt/<span class="constant">GuitarPro</span>/launcher.sh</code></pre>
 <p>起動が確認できたらアップデータで最新のものへしてやりましょう．（アップデータの起動にエラーが出るときはgksudoがインストールされてない可能性があります．）</p>
 </li>
-<li><h3>エラーなど</h3>
+<li><h3 id="-">エラーなど</h3>
 <ul>
 <li><p><strong><code>/opt/GuitarPro6/launcher.sh</code>が以下のエラーメッセージを出して起動しない</strong>  </p>
 <pre><code>./GuitarPro: error <span class="keyword">while</span> loading <span class="keyword">shared</span> libraries: libportaudio.so<span class="number">.2</span>: cannot <span class="keyword">open</span> <span class="keyword">shared</span> object <span class="keyword">file</span>: No such <span class="keyword">file</span> <span class="keyword">or</span> directory</code></pre>
@@ -175,7 +175,7 @@
 
 
       <div class="footer">
-      Copyright iaarchiver, 2013.
+      Copyright iaarchiver, 2014.
       </div>
     </div>
     <!-- [END] .wrapper -->

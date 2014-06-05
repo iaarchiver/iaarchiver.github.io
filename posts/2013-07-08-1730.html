@@ -105,10 +105,10 @@
   <div class="post-content">
     <p>Ubuntuでmpdを利用する際にいくつか詰まるところがあったのでメモします．
 運用方法は，Ubuntu起動時にユーザ設定を読み込んでmpdを立ち上げておき，同Ubuntuのsonataで聞く，もしくはローカルネットワークにあるデバイスで聞く，という方法です．</p>
-<h2>まずはなによりインストール</h2>
+<h2 id="-">まずはなによりインストール</h2>
 <pre><code>    $ su<span class="operator"><span class="keyword">do</span> apt-<span class="keyword">get</span> install mpd sonata</code></pre>
 <p>必要ならば<code>mpc</code>も合わせてインストールしておきます．</p>
-<h2><code>~/.mpdconf</code>を以下の例のように設定．</h2>
+<h2 id="-mpdconf-"><code>~/.mpdconf</code>を以下の例のように設定．</h2>
 <pre><code>    <span class="title">port</span> <span class="string">"6600"</span>
     music_directory <span class="string">"~/Music/"</span>
     playlist_directory <span class="string">"~/.mpd/playlists"</span>
@@ -119,7 +119,7 @@
     name <span class="string">"MPD"</span>
     }</code></pre>
 <p><code>audio_output</code>はメディアサーバとして運用するなど特定の条件下で無い限り，<code>pulse</code>を選択するほうが良いです．</p>
-<h2>mpdを起動，そしてエラーメッセージ</h2>
+<h2 id="mpd-">mpdを起動，そしてエラーメッセージ</h2>
 <pre><code>    $ mpd
     Failed <span class="keyword">to</span> bind <span class="keyword">to</span> '[::]:<span class="number">6600</span>': Address already <span class="keyword">in</span> <span class="keyword">use</span></code></pre>
 <p>多くの場合このエラーメッセージが表示されます．（出ない場合でも再起動後に遭遇するかもしれません．）</p>
@@ -130,10 +130,10 @@
 </ul>
 <p>...要するに紛らわしいという話です．</p>
 <ol>
-<li><h3>sonataでmpdをちゃんと起動できているか確認する</h3>
+<li><h3 id="sonata-mpd-">sonataでmpdをちゃんと起動できているか確認する</h3>
 <p>sonataを起動し，コンテクストメニューからPreference画面を開いて以下のように設定します．<br><img src="/img/sonata.jpg" alt="sonata"><br>Portは<code>~/.mpdconf</code>で指定したものと同じ値を入力します．また，外部のデバイスから聞く場合はHostをmpdを走らせているマシンのローカルIPアドレスを指定する必要があります．ユーザ設定がきちんと読み込まれていればmpd起動の瞬間に，sonataのLibraryタブに<code>~/.mpdconf</code>で指定したフォルダ内の音楽ファイルが表示されます．</p>
 </li>
-<li><h3><code>/etc/init.d/mpd</code>がデーモンとして実行されているかどうか確認する</h3>
+<li><h3 id="-etc-init-d-mpd-"><code>/etc/init.d/mpd</code>がデーモンとして実行されているかどうか確認する</h3>
 <p>mpdをインストールすると<code>/etc/init.d/mpd</code>が作成されて，起動時にスーパーユーザが
 デーモンとしてmpdを実行しています．そしてこのときユーザ設定（<code>~/.mpdconf</code>）ではなく管理者設定（<code>/etc/mpd.conf</code>）のみが読み込まれるため，このままではsonataを起動してもLibraryタブに先ほど指定した音楽ファイルが表示されません．
 このときは以下を実行してユーザ権限でmpdを再起動させます．</p>
@@ -147,7 +147,7 @@
 <pre><code> <span class="title">bind_to_address</span> <span class="string">"127.0.0.1"</span></code></pre>
 </blockquote>
 </li>
-<li><h3>起動時にスーパーユーザがmpdを起動させないようにする</h3>
+<li><h3 id="-mpd-">起動時にスーパーユーザがmpdを起動させないようにする</h3>
 <p>起動時にmpdをユーザ設定を読み込んだ上で起動するためには，まずスーパーユーザがmpdを起動させないようにする必要があります．これは<code>/etc/mpd.conf</code>にユーザ設定を直接書いてしまったり，<code>/etc/init.d/mpd</code>をリネームもしくは削除してしまうことで実現できてしまいますが，あまり望ましい方法ではありません．<code>/etc/init.d</code>に登録されながらも自動起動をオフするには以下のようにします</p>
 <pre><code> su<span class="operator"><span class="keyword">do</span> <span class="keyword">update</span>-rc.d mpd disable</code></pre>
 <p>オンにしたい場合は<code>disable</code>を<code>enable</code>に変えて実行します．</p>
@@ -179,7 +179,7 @@
 
 
       <div class="footer">
-      Copyright iaarchiver, 2013.
+      Copyright iaarchiver, 2014.
       </div>
     </div>
     <!-- [END] .wrapper -->

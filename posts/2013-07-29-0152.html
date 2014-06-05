@@ -105,20 +105,20 @@
   <div class="post-content">
     <p>コマンドラインからテキストをジャーナリングできる<a href="http://maebert.github.io/jrnl/">jrnl</a>というアプリを使用してDayOneのエントリーを読み書きする方法のメモ．</p>
 <p>MacであればDayOneオフィシャルの<a href="http://dayoneapp.com/tools/">コマンドラインツール</a>が使用できるので，それ以外の端末からDayOneエントリーを操作したい人向けです．</p>
-<h2>jrnlのインストールと起動</h2>
+<h2 id="jrnl-">jrnlのインストールと起動</h2>
 <pre><code>$ su<span class="operator"><span class="keyword">do</span> pip install jrnl
 $ jrnl
 Path <span class="keyword">to</span> your journal file (leave blank <span class="keyword">for</span> ~/journal.txt): 
 Enter password <span class="keyword">for</span> journal (leave blank <span class="keyword">for</span> <span class="keyword">no</span> encryption): 
 [Compose Entry] </code></pre>
 <p>初回起動時に保存先とパスワードを聞かれますが無入力で良いです．この設定は<code>~/.jrnl_config</code>にて変更が可能です．</p>
-<h2>DayOneのエントリーを統合する</h2>
+<h2 id="dayone-">DayOneのエントリーを統合する</h2>
 <p><code>~/.jrnl_config</code>の<code>journals</code>キーを以下のように変更．</p>
 <pre><code>&quot;journals&quot;: {
     &quot;default&quot;: &quot;/path/to/Journal.dayone/&quot;
 }</code></pre>
 <p><code>Journal.dayone</code>はDayOneのエントリーを保存しているフォルダであり，DayOneの同期先によって異なります．例えばDropboxで同期している場合は<code>/path/to/Dropbox/Apps/Day\ One/Journal.dayone</code>のようになります．</p>
-<h2>KeyError:&#39;Time Zone&#39;が出るとき</h2>
+<h2 id="keyerror-time-zone-">KeyError:&#39;Time Zone&#39;が出るとき</h2>
 <p>最新のバージョンのDayOneではすべての新規エントリーにタイムゾーンが付与される仕様になっていますが，古いエントリーにタイムゾーンの情報が付与されていないとき，それが原因でエラーが出ます．（jrnl1.4.2で確認．今後修正されるかも）</p>
 <pre><code><span class="keyword">File</span> <span class="string">"/usr/local/lib/python2.7/dist-packages/jrnl/Journal.py"</span>, line <span class="number">316</span>, <span class="keyword">in</span> parse
 timezone = pytz.timezone(dict_entry[<span class="attribute">'Time</span> Zone'])
@@ -136,7 +136,7 @@ KeyError: <span class="attribute">'Time</span> Zone'</code></pre>
   -         <span class="keyword">except</span> pytz.exceptions.UnknownTimeZoneError:
   +         <span class="keyword">except</span> :
                 timezone = pytz.timezone(util.get_local_timezone())</code></pre>
-<h2>jrnl1.4.2でできること</h2>
+<h2 id="jrnl1-4-2-">jrnl1.4.2でできること</h2>
 <ul>
 <li>最近追加したエントリーを３件表示<pre><code>  <span class="title">jrnl</span> -n <span class="number">3</span></code></pre>
 </li>
@@ -149,7 +149,7 @@ KeyError: <span class="attribute">'Time</span> Zone'</code></pre>
 <li>日時とタグを指定してエントリーを追加<pre><code>  <span class="title">jrnl</span> yesterday: 鳩のえさやり @公園</code></pre>
 </li>
 </ul>
-<h2>jrnl1.4.2でできないこと</h2>
+<h2 id="jrnl1-4-2-">jrnl1.4.2でできないこと</h2>
 <ul>
 <li>過去エントリーの編集，削除（jrnlを経由せずに<code>Journal.dayone</code>フォルダー内の<code>.doentry</code>ファイルを直接編集/削除は可能ですが，同期したMacやiPhoneで操作したほうが良いです．）</li>
 <li>エントリーにメディア（画像，音声など）を追加する</li>
@@ -180,7 +180,7 @@ KeyError: <span class="attribute">'Time</span> Zone'</code></pre>
 
 
       <div class="footer">
-      Copyright iaarchiver, 2013.
+      Copyright iaarchiver, 2014.
       </div>
     </div>
     <!-- [END] .wrapper -->

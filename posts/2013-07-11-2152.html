@@ -106,7 +106,7 @@
     <p><a href="http://askubuntu.com/questions/285874/how-can-i-mount-cifs-shares-in-kubuntu-13-04">http://askubuntu.com/questions/285874/how-can-i-mount-cifs-shares-in-kubuntu-13-04</a></p>
 <p>12.10のときと若干変更があったのでメモ．確認環境は13.04(64bit)，TimeCapsuleの共有ディスクはデバイスパスワードでアクセス制限している状態です．</p>
 <p>予め<code>sudo apt-get install samba cifs-utils</code>を実行してsambaとcifs-utilsをインストールを確認しておきます．</p>
-<h2>TimeCapsuleのホスト名，IPアドレスをまずは確認する．</h2>
+<h2 id="timecapsule-ip-">TimeCapsuleのホスト名，IPアドレスをまずは確認する．</h2>
 <p>TimeCapsuleのIPアドレスやホスト名はmac上でAirmacユーティリティを使用することで確認できますが，Ubuntuから確認するには以下を実行します．</p>
 <pre><code><span class="comment">$</span> <span class="comment">avahi</span>-<span class="comment">browse</span> <span class="literal">-</span><span class="comment">a</span> <span class="literal">-</span><span class="comment">p</code></pre>
 <p>Bonjourネットワークに存在するすべてのホスト情報が一覧で表示されますので，その中からTimeCapsuleのものと思われるホスト名（hostname）とローカルIPアドレス（address）を確認します．</p>
@@ -117,13 +117,13 @@
    port = [<span class="number">5009</span>]
 <span class="keyword">...</span></code></pre>
 <p>このような表示が見つかれば，<code>TimeCapsule.local</code>，もしくは<code>192.168.0.1</code>でTimeCapsuleにアクセスすることが確認できます．</p>
-<h2>端末からマウントさせる</h2>
+<h2 id="-">端末からマウントさせる</h2>
 <p><code>TimeCapsule.local</code>というホスト名のTimeCapsuleを<code>/media/timecapsule</code>にマウントさせるには以下を実行します．（予め<code>sudo mkdir /media/timecapsule</code>でマウントポイントのディレクトリを作成しておく必要があります．）</p>
 <pre><code>$ su<span class="operator"><span class="keyword">do</span> mount.cifs //TimeCapsule.<span class="keyword">local</span>/TimeCapsule /media/timecapsule -o pass=PASWORD,rw,iocharset=utf8,file_mode=<span class="number">0777</span>,dir_mode=<span class="number">0777</span>,sec=ntlm</code></pre>
 <p><code>//TimeCapsule.local/</code>の部分は<code>//192.168.0.1/</code>のようにローカルIPアドレスで指定しても構いません．（13.04では<code>sec=ntlm</code>オプションが必要になりました．）</p>
 <p>アンマウントさせる場合は以下を実行します．</p>
 <pre><code>$ su<span class="operator"><span class="keyword">do</span> umount /media/timecapsule</code></pre>
-<h2>fstabで自動マウントさせる</h2>
+<h2 id="fstab-">fstabで自動マウントさせる</h2>
 <p>起動時にマウントさせるには<code>/etc/fstab</code>に以下の行を追加します．</p>
 <pre><code>/<span class="regexp">/TimeCapsule.local/</span><span class="constant">TimeCapsule</span>/  <span class="regexp">/media/timecapsule</span>  cifs password=macintosh,rw,iocharset=utf8,file_mode=<span class="number">0777</span>,dir_mode=<span class="number">0777</span>,sec=ntlm</code></pre>
 <p>追加後，再起動もしくは<code>sudo mount -a</code>を実行でマウントが確認できれば成功です．</p>
@@ -154,7 +154,7 @@
 
 
       <div class="footer">
-      Copyright iaarchiver, 2013.
+      Copyright iaarchiver, 2014.
       </div>
     </div>
     <!-- [END] .wrapper -->

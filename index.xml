@@ -1,126 +1,167 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[notions:iaarchiver]]></title><description><![CDATA[blog where I write notions]]></description><link>http://iaarchiver.github.io</link><generator>NodeJS RSS Module</generator><lastBuildDate>Mon, 23 Dec 2013 00:56:19 GMT</lastBuildDate><atom:link href="http://iaarchiver.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[Ubuntuでmpdのセットアップ]]></title><description><![CDATA[<p>Ubuntuでmpdを利用する際にいくつか詰まるところがあったのでメモします．
-運用方法は，Ubuntu起動時にユーザ設定を読み込んでmpdを立ち上げておき，同Ubuntuのsonataで聞く，もしくはローカルネットワークにあるデバイスで聞く，という方法です．</p>
-<h2>まずはなによりインストール</h2>
-<pre><code>    $ su<span class="operator"><span class="keyword">do</span> apt-<span class="keyword">get</span> install mpd sonata</code></pre>
-<p>必要ならば<code>mpc</code>も合わせてインストールしておきます．</p>
-<h2><code>~/.mpdconf</code>を以下の例のように設定．</h2>
-<pre><code>    <span class="title">port</span> <span class="string">"6600"</span>
-    music_directory <span class="string">"~/Music/"</span>
-    playlist_directory <span class="string">"~/.mpd/playlists"</span>
-    db_file <span class="string">"~/.mpd/mpd.db"</span>
-    log_file <span class="string">"~/.mpd/mpd.log"</span>
-    audio_output {
-    <span class="title">type</span> <span class="string">"pulse"</span>
-    name <span class="string">"MPD"</span>
-    }</code></pre>
-<p><code>audio_output</code>はメディアサーバとして運用するなど特定の条件下で無い限り，<code>pulse</code>を選択するほうが良いです．</p>
-<h2>mpdを起動，そしてエラーメッセージ</h2>
-<pre><code>    $ mpd
-    Failed <span class="keyword">to</span> bind <span class="keyword">to</span> '[::]:<span class="number">6600</span>': Address already <span class="keyword">in</span> <span class="keyword">use</span></code></pre>
-<p>多くの場合このエラーメッセージが表示されます．（出ない場合でも再起動後に遭遇するかもしれません．）</p>
-<p>検索するとこのエラーの解決法について多くのスレッドが見つかりますが，詰まる人が多い理由は以下２つが原因と考えられます．</p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[notions:iaarchiver]]></title><description><![CDATA[blog where I write notions]]></description><link>http://iaarchiver.github.io</link><generator>NodeJS RSS Module</generator><lastBuildDate>Thu, 05 Jun 2014 12:48:54 GMT</lastBuildDate><atom:link href="http://iaarchiver.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title><![CDATA[LinuxからDayOneの読み書きを行う]]></title><description><![CDATA[<p>コマンドラインからテキストをジャーナリングできる<a href="http://maebert.github.io/jrnl/">jrnl</a>というアプリを使用してDayOneのエントリーを読み書きする方法のメモ．</p>
+<p>MacであればDayOneオフィシャルの<a href="http://dayoneapp.com/tools/">コマンドラインツール</a>が使用できるので，それ以外の端末からDayOneエントリーを操作したい人向けです．</p>
+<h2 id="jrnl-">jrnlのインストールと起動</h2>
+<pre><code>$ su<span class="operator"><span class="keyword">do</span> pip install jrnl
+$ jrnl
+Path <span class="keyword">to</span> your journal file (leave blank <span class="keyword">for</span> ~/journal.txt): 
+Enter password <span class="keyword">for</span> journal (leave blank <span class="keyword">for</span> <span class="keyword">no</span> encryption): 
+[Compose Entry] </code></pre>
+<p>初回起動時に保存先とパスワードを聞かれますが無入力で良いです．この設定は<code>~/.jrnl_config</code>にて変更が可能です．</p>
+<h2 id="dayone-">DayOneのエントリーを統合する</h2>
+<p><code>~/.jrnl_config</code>の<code>journals</code>キーを以下のように変更．</p>
+<pre><code>&quot;journals&quot;: {
+    &quot;default&quot;: &quot;/path/to/Journal.dayone/&quot;
+}</code></pre>
+<p><code>Journal.dayone</code>はDayOneのエントリーを保存しているフォルダであり，DayOneの同期先によって異なります．例えばDropboxで同期している場合は<code>/path/to/Dropbox/Apps/Day\ One/Journal.dayone</code>のようになります．</p>
+<h2 id="keyerror-time-zone-">KeyError:&#39;Time Zone&#39;が出るとき</h2>
+<p>最新のバージョンのDayOneではすべての新規エントリーにタイムゾーンが付与される仕様になっていますが，古いエントリーにタイムゾーンの情報が付与されていないとき，それが原因でエラーが出ます．（jrnl1.4.2で確認．今後修正されるかも）</p>
+<pre><code><span class="keyword">File</span> <span class="string">"/usr/local/lib/python2.7/dist-packages/jrnl/Journal.py"</span>, line <span class="number">316</span>, <span class="keyword">in</span> parse
+timezone = pytz.timezone(dict_entry[<span class="attribute">'Time</span> Zone'])
+KeyError: <span class="attribute">'Time</span> Zone'</code></pre>
+<p>jrnlを起動した際に上のようなエラーが出るときは<code>sudo emacs /usr/local/lib/python2.7/dist-packages/jrnl/Journal.py</code>でエディタを開き，以下のように編集します．</p>
+<pre><code><span class="function"><span class="keyword">def</span> <span class="title">parse</span><span class="params">(self, filenames)</span>:</span>
+    <span class="string">"""Instead of parsing a string into an entry, this method will take a list
+    of filenames, interpret each as a plist file and create a new entry from that."""</span>
+    self.entries = []
+    <span class="keyword">for</span> filename <span class="keyword">in</span> filenames:
+        <span class="keyword">with</span> open(filename, <span class="string">'rb'</span>) <span class="keyword">as</span> plist_entry:
+            dict_entry = plistlib.readPlist(plist_entry)
+            <span class="keyword">try</span>:
+                timezone = pytz.timezone(dict_entry[<span class="string">'Time Zone'</span>])
+  -         <span class="keyword">except</span> pytz.exceptions.UnknownTimeZoneError:
+  +         <span class="keyword">except</span> :
+                timezone = pytz.timezone(util.get_local_timezone())</code></pre>
+<h2 id="jrnl1-4-2-">jrnl1.4.2でできること</h2>
 <ul>
-<li>エラーメッセージの通りに起動自体に失敗しているのか，設定の読み込みに失敗しているだけなのかわかりにくい．</li>
-<li>mpdの起動に成功しても（別のことが原因で）似たようなエラーメッセージが表示される．</li>
-</ul>
-<p>...要するに紛らわしいという話です．</p>
-<ol>
-<li><h3>sonataでmpdをちゃんと起動できているか確認する</h3>
-<p>sonataを起動し，コンテクストメニューからPreference画面を開いて以下のように設定します．<br><img src="/img/sonata.jpg" alt="sonata"><br>Portは<code>~/.mpdconf</code>で指定したものと同じ値を入力します．また，外部のデバイスから聞く場合はHostをmpdを走らせているマシンのローカルIPアドレスを指定する必要があります．ユーザ設定がきちんと読み込まれていればmpd起動の瞬間に，sonataのLibraryタブに<code>~/.mpdconf</code>で指定したフォルダ内の音楽ファイルが表示されます．</p>
+<li>最近追加したエントリーを３件表示<pre><code>  <span class="title">jrnl</span> -n <span class="number">3</span></code></pre>
 </li>
-<li><h3><code>/etc/init.d/mpd</code>がデーモンとして実行されているかどうか確認する</h3>
-<p>mpdをインストールすると<code>/etc/init.d/mpd</code>が作成されて，起動時にスーパーユーザが
-デーモンとしてmpdを実行しています．そしてこのときユーザ設定（<code>~/.mpdconf</code>）ではなく管理者設定（<code>/etc/mpd.conf</code>）のみが読み込まれるため，このままではsonataを起動してもLibraryタブに先ほど指定した音楽ファイルが表示されません．
-このときは以下を実行してユーザ権限でmpdを再起動させます．</p>
-<pre><code> <span class="char">$ </span>sudo service mpd stop
- # もしくは <span class="char">$ </span>sudo /etc/init.d/mpd stop
- <span class="char">$ </span>mpd
- <span class="method">listen:</span> bind to <span class="string">'0.0.0.0:6600'</span> <span class="method">failed:</span> <span class="class">Address</span> already in use (continuing anyway, because binding to <span class="string">'[::]:6600'</span> succeeded)</code></pre>
-<p>さきほどと似たようなエラーメッセージが出てはいますが，sonataを起動してLibraryタブに指定した音楽フォルダの中身が反映されている場合，mpdは無事起動しています．</p>
-<blockquote>
-<p>このエラーメッセージは，ipv6でのバインドを試行して失敗したこと原因のようです．その後にIPv4でバインドに成功しているため問題はありませんが，このメッセージを消したい場合，<code>~/.mpdconf</code>に以下の設定を加えてIPv4でのバインドを指定してやります．<br> 参考：<a href="https://wiki.archlinux.org/index.php/Music_Player_Daemon/Troubleshooting">https://wiki.archlinux.org/index.php/Music_Player_Daemon/Troubleshooting</a></p>
-<pre><code> <span class="title">bind_to_address</span> <span class="string">"127.0.0.1"</span></code></pre>
-</blockquote>
+<li>すべてのエントリーのタイトルのみ表示<pre><code>  <span class="title">jrnl</span> -short</code></pre>
 </li>
-<li><h3>起動時にスーパーユーザがmpdを起動させないようにする</h3>
-<p>起動時にmpdをユーザ設定を読み込んだ上で起動するためには，まずスーパーユーザがmpdを起動させないようにする必要があります．これは<code>/etc/mpd.conf</code>にユーザ設定を直接書いてしまったり，<code>/etc/init.d/mpd</code>をリネームもしくは削除してしまうことで実現できてしまいますが，あまり望ましい方法ではありません．<code>/etc/init.d</code>に登録されながらも自動起動をオフするには以下のようにします</p>
-<pre><code> su<span class="operator"><span class="keyword">do</span> <span class="keyword">update</span>-rc.d mpd disable</code></pre>
-<p>オンにしたい場合は<code>disable</code>を<code>enable</code>に変えて実行します．</p>
+<li>エントリーを追加<pre><code>  <span class="title">jrnl</span>
+  [Compose Entry]
+  <span class="comment"># Enterで入力終了</span></code></pre>
 </li>
-</ol>
-<p>これで自動起動がオフにできたら，DashメニューからStartupApplicationにmpdコマンドを追加することで，ログイン時にユーザ設定を読み込んだ状態でmpdを起動してくれます．</p>
-]]></description><link>http://iaarchiver.github.io/posts/2013-07-08-1730.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-08-1730.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Mon, 08 Jul 2013 08:30:00 GMT</pubDate></item><item><title><![CDATA[grunt-contrib-copyでのパス指定]]></title><description><![CDATA[<p><a href="https://github.com/gruntjs/grunt-contrib-copy/issues/60">https://github.com/gruntjs/grunt-contrib-copy/issues/60</a></p>
-<p>GithubのIssueでも語られていますが，grunt-contrib-copyのパスの指定方法に注意が必要だったのでメモします．</p>
-<p>指定フォルダ内のファイルを階層を維持しながら別の場所へコピーしたい場合<code>cp path/* dest/</code>のつもりで以下のように指定すると思った通りのパスへコピーしてくれません．</p>
-<pre><code>    <span class="method">copy:</span> {
-        <span class="method">dame1:</span> {
-            //ダメ
-            <span class="method">files:</span> [{<span class="method">src:</span> <span class="string">'path/**'</span>, <span class="method">dest:</span> <span class="string">'dest/'</span>}]
-        },
-        <span class="method">dame2:</span> {
-            // これもダメ
-            <span class="method">files:</span> [{<span class="method">expand:</span> <span class="keyword">true</span>, <span class="method">src:</span> [<span class="string">'path/**'</span>], <span class="method">dest:</span> <span class="string">'dest/'</span>}]
-        }
-    }</code></pre>
-<p>上記コードでは<code>dest/path/</code>内に階層を維持しながらファイルがコピーされてしまいます．</p>
-<p>正しくは，</p>
-<pre><code>    <span class="method">copy:</span> {
-        <span class="method">ok:</span> {
-            <span class="method">files:</span> [{<span class="method">expand:</span> <span class="keyword">true</span>, <span class="method">cwd:</span> <span class="string">'path/'</span>, <span class="method">src:</span> [**], <span class="method">dest:</span> <span class="string">'dest/'</span>}]
-        }
-    }</code></pre>
-<p>expandオプションがあると，もし中間のティレクトリが存在しなければ作成してくれます．（mkdirの-pオプション相当）ちなみにこれは<code>cwd</code>オプションでカレントディレクトリを指定した場合のみ有効なオプションのようです．</p>
-]]></description><link>http://iaarchiver.github.io/posts/2013-07-08-2117.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-08-2117.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Mon, 08 Jul 2013 12:17:00 GMT</pubDate></item><item><title><![CDATA[GuitarPro6を64bit環境にインストールする]]></title><description><![CDATA[<p>正式にサポートされているのは32bitマシンだけなのですが，無理やりインストールできそうでしたのでやってみました．</p>
-<ol>
-<li><h3>gp6-full-linux-*.debファイルを用意</h3>
-<p>linux用インストーラを<a href="http://www.guitar-pro.com/">http://www.guitar-pro.com/</a>のサポートページからダウンロードします．（日本で代理販売をしているイーフロンティアではLinux版は元々サポートしていないので本家のサポートページでライセンスを登録する必要があります．）</p>
-</li>
-<li><h3>依存関係を解決</h3>
-<p>依存関係にあるライブラリを確認します．</p>
-<pre><code> <span class="comment">$</span> <span class="comment">dpkg</span> <span class="literal">-</span><span class="comment">I</span> <span class="comment">gp6</span>-<span class="comment">full</span>-<span class="comment">linux</span>-<span class="comment">r11553</span>.<span class="comment">deb</span>        </code></pre>
-<p>depends欄に書かれているものをSynapticsもしくは<code>$ sudo apt-get install ...</code>でインストールしておきます．</p>
-<blockquote>
-<p><strong><code>$ sudo dpkg -i gp6-full-linux-*.deb</code>でインストールしようとしてはダメ</strong><br />&#39;You have 1 broken package on your system! Use &quot;Broken&quot; filter to locate it&#39;というエラーがSynapticsで出るようになります．Edit &gt; Fix Broken Packagesを選択してApplyすると壊れたGP6パッケージを削除できます．（このときsudoが消せないというエラーが出ますがこれは無視しても大丈夫．）しかし，GP6が既にインストールできていた場合は，GP6の再インストールが必要になるので注意．</p>
-</blockquote>
-</li>
-<li><h3>/opt/へ本体をコピー</h3>
-<p>gp6-full-linux-*.debを解凍してGuitarPro6本体を<code>/opt/</code>へコピーします．</p>
-<pre><code> <span class="comment">$</span> <span class="comment">dpkg</span> <span class="literal">-</span><span class="comment">x</span> <span class="comment">gp6</span>-<span class="comment">full</span>-<span class="comment">linux</span>-<span class="comment">\*</span>.<span class="comment">deb</span> <span class="comment">~/temp</span>
- <span class="comment">$</span> <span class="comment">sudo</span> <span class="comment">cp</span> <span class="literal">-</span><span class="comment">R</span> <span class="comment">~/temp/opt/GuitarPro6</span> <span class="comment">/opt/</code></pre>
-<p>ちなみに.debファイルの解凍はArchiveManagerでもできます．</p>
-</li>
-<li><h3>getlib-all.debをインストール</h3>
-<p>getlibsは64bit環境に32bit用アプリをインストールする際に必要なライブラリをインストールするためのユーティリティソフト（らしい）です．現状ではlaunchpadでmaintainされていないようですが，<a href="http://jeffhendricks.net/?p=68">こちらのページ</a>からダウンロードできました．ダブルクリックでSoftwareCenterからインストールするか<code>dpkg -i getlibs-all.deb</code>でインストールします．</p>
-</li>
-<li><h3>getlibsする</h3>
-<p>以上が完了したら以下を実行します．</p>
-<pre><code> <span class="variable">$ </span>getlibs /opt/<span class="constant">GuitarPro</span>/<span class="constant">GuitarPro</span></code></pre>
-</li>
-<li><h3>GuitarPro6を起動</h3>
-<p>エラーなくgetlibsできたらGuitarPro6を起動します．</p>
-<pre><code> <span class="variable">$ </span>/opt/<span class="constant">GuitarPro</span>/launcher.sh</code></pre>
-<p>起動が確認できたらアップデータで最新のものへしてやりましょう．（アップデータの起動にエラーが出るときはgksudoがインストールされてない可能性があります．）</p>
-</li>
-<li><h3>エラーなど</h3>
-<ul>
-<li><p><strong><code>/opt/GuitarPro6/launcher.sh</code>が以下のエラーメッセージを出して起動しない</strong>  </p>
-<pre><code>./GuitarPro: error <span class="keyword">while</span> loading <span class="keyword">shared</span> libraries: libportaudio.so<span class="number">.2</span>: cannot <span class="keyword">open</span> <span class="keyword">shared</span> object <span class="keyword">file</span>: No such <span class="keyword">file</span> <span class="keyword">or</span> directory</code></pre>
-<p>getlibsがlibportaudio2をカバーできていないことが原因．<code>sudo apt-get install libportaudio2:i386</code>で個別にインストールしてやります．</p>
-</li>
-<li><p><strong>アップデータが起動しない</strong><br>gksudoがインストールされていない可能性があります．</p>
-</li>
-<li><p><strong>アップデートしたら<code>./GuitarPro: /opt/GuitarPro6/./libz.so.1: version `ZLIB_1.2.3.3&#39; not found (required by /usr/lib/i386-linux-gnu/libxml2.so.2)</code>というエラーが出て起動しない</strong><br>  sudo rm /opt/GuitarPro6/libz.so.1`で消してやれば問題ないもよう．</p>
+<li>日時とタグを指定してエントリーを追加<pre><code>  <span class="title">jrnl</span> yesterday: 鳩のえさやり @公園</code></pre>
 </li>
 </ul>
+<h2 id="jrnl1-4-2-">jrnl1.4.2でできないこと</h2>
+<ul>
+<li>過去エントリーの編集，削除（jrnlを経由せずに<code>Journal.dayone</code>フォルダー内の<code>.doentry</code>ファイルを直接編集/削除は可能ですが，同期したMacやiPhoneで操作したほうが良いです．）</li>
+<li>エントリーにメディア（画像，音声など）を追加する</li>
+<li>エントリーの付与されたメディアを表示する</li>
+</ul>
+]]></description><link>http://iaarchiver.github.io/posts/2013-07-29-0152.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-29-0152.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Sun, 28 Jul 2013 16:52:00 GMT</pubDate></item><item><title><![CDATA[Ubuntu13.04でTimeCapsuleをマウントする]]></title><description><![CDATA[<p><a href="http://askubuntu.com/questions/285874/how-can-i-mount-cifs-shares-in-kubuntu-13-04">http://askubuntu.com/questions/285874/how-can-i-mount-cifs-shares-in-kubuntu-13-04</a></p>
+<p>12.10のときと若干変更があったのでメモ．確認環境は13.04(64bit)，TimeCapsuleの共有ディスクはデバイスパスワードでアクセス制限している状態です．</p>
+<p>予め<code>sudo apt-get install samba cifs-utils</code>を実行してsambaとcifs-utilsをインストールを確認しておきます．</p>
+<h2 id="timecapsule-ip-">TimeCapsuleのホスト名，IPアドレスをまずは確認する．</h2>
+<p>TimeCapsuleのIPアドレスやホスト名はmac上でAirmacユーティリティを使用することで確認できますが，Ubuntuから確認するには以下を実行します．</p>
+<pre><code><span class="comment">$</span> <span class="comment">avahi</span>-<span class="comment">browse</span> <span class="literal">-</span><span class="comment">a</span> <span class="literal">-</span><span class="comment">p</code></pre>
+<p>Bonjourネットワークに存在するすべてのホスト情報が一覧で表示されますので，その中からTimeCapsuleのものと思われるホスト名（hostname）とローカルIPアドレス（address）を確認します．</p>
+<pre><code><span class="keyword">...</span>
+=  wlan0 IPv4 TimeCapsule                                   Apple AirPort        local
+   hostname = [TimeCapsule.local]
+   address = [<span class="number">192.168</span><span class="number">.0</span><span class="number">.1</span>]
+   port = [<span class="number">5009</span>]
+<span class="keyword">...</span></code></pre>
+<p>このような表示が見つかれば，<code>TimeCapsule.local</code>，もしくは<code>192.168.0.1</code>でTimeCapsuleにアクセスすることが確認できます．</p>
+<h2 id="-">端末からマウントさせる</h2>
+<p><code>TimeCapsule.local</code>というホスト名のTimeCapsuleを<code>/media/timecapsule</code>にマウントさせるには以下を実行します．（予め<code>sudo mkdir /media/timecapsule</code>でマウントポイントのディレクトリを作成しておく必要があります．）</p>
+<pre><code>$ su<span class="operator"><span class="keyword">do</span> mount.cifs //TimeCapsule.<span class="keyword">local</span>/TimeCapsule /media/timecapsule -o pass=PASWORD,rw,iocharset=utf8,file_mode=<span class="number">0777</span>,dir_mode=<span class="number">0777</span>,sec=ntlm</code></pre>
+<p><code>//TimeCapsule.local/</code>の部分は<code>//192.168.0.1/</code>のようにローカルIPアドレスで指定しても構いません．（13.04では<code>sec=ntlm</code>オプションが必要になりました．）</p>
+<p>アンマウントさせる場合は以下を実行します．</p>
+<pre><code>$ su<span class="operator"><span class="keyword">do</span> umount /media/timecapsule</code></pre>
+<h2 id="fstab-">fstabで自動マウントさせる</h2>
+<p>起動時にマウントさせるには<code>/etc/fstab</code>に以下の行を追加します．</p>
+<pre><code>/<span class="regexp">/TimeCapsule.local/</span><span class="constant">TimeCapsule</span>/  <span class="regexp">/media/timecapsule</span>  cifs password=macintosh,rw,iocharset=utf8,file_mode=<span class="number">0777</span>,dir_mode=<span class="number">0777</span>,sec=ntlm</code></pre>
+<p>追加後，再起動もしくは<code>sudo mount -a</code>を実行でマウントが確認できれば成功です．</p>
+]]></description><link>http://iaarchiver.github.io/posts/2013-07-11-2152.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-11-2152.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Thu, 11 Jul 2013 12:52:00 GMT</pubDate></item><item><title><![CDATA[Ubuntu13.04インストールおぼえがき]]></title><description><![CDATA[<h2 id="usb-">USBメモリからインストール</h2>
+<p><a href="http://www.ubuntu.com/download/desktop/create-a-usb-stick-on-ubuntu">http://www.ubuntu.com/download/desktop/create-a-usb-stick-on-ubuntu</a><br>ブート可能なUSBメモリの作成方法が詳しく紹介されています．</p>
+<h2 id="-">インストール後にまずすること</h2>
+<ul>
+<li><strong>Software Updaterでアップデートする．</strong><br>OS本体のインストールより時間がかかります．</li>
+<li><strong>AdditionalDriversをインストール</strong><br>System Settings &gt; Software &amp; Updates &gt; Additional Driversから環境にあったドライバをインストールします．Nvidiaを使用しているなら再起動でNvidia X Server Settingsから細かい環境設定が行えるようになります．</li>
+<li><strong>日本語環境の構築</strong><br>Language Support &gt; install/Remove LanguagesからJapaneseを選択してインストールします．デフォルトを日本語に変更したい場合は，Languages for menus and windowsで日本語を先頭にドラッグし，Apply System-Wideを押すと再起動後に変更されます．</li>
+<li><strong>日本語入力を可能にする</strong><br><code>$ sudo apt-get install ibus-mozc</code>をibus-mozcをインストール後，Language Support &gt; Keyboard input method system にibusを選択すると起動時にibusを起動してくれます．</li>
+</ul>
+<h2 id="fstab-">fstabの編集</h2>
+<p>起動時に自動的にマウントさせるドライブを設定します．</p>
+<ul>
+<li><h3 id="hdd-home-">HDDを/homeにマウントする</h3>
+<p>ext4でフォーマットした<code>/dev/sdb1</code>というパスのパーティションを/homeとしてマウントさせたい場合，以下のような設定をfstabに加えます．</p>
+<pre><code>  <span class="regexp">/dev/sdb1                  /</span>home          ext4      defaults,user_xattr      <span class="number">0</span>    <span class="number">0</span></code></pre>
 </li>
-</ol>
-<p>今のところ問題なく動いていますが，今後のアップデートによっては起動しなくなる可能性もあります．Soundbankのインストールに失敗する場合もあるらしく（Ubuntu13.04x86_64では無問題でした），そのWorkaroundが<a href="https://www.linux.com/community/blogs/128-desktops/494464">こちら</a>で紹介されています．</p>
-]]></description><link>http://iaarchiver.github.io/posts/2013-07-09-0731.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-09-0731.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Mon, 08 Jul 2013 22:31:00 GMT</pubDate></item><item><title><![CDATA[yacreader（のソースコード）をいじる]]></title><description><![CDATA[<p><a href="http://www.yacreader.com/">yacreader</a>とは<a href="http://comix.sourceforge.net/">comix</a>よりもリッチな見栄えのコミックビューアです．iPhone版もリリースされて開発が活発なので利用してみました．</p>
+<li><h3 id="timecapsule-">TimeCapsuleをマウントする</h3>
+<p>参考：<a href="http://iaarchiver.github.io/posts/2013-07-11-2152.html">Ubuntu13.04でTimeCapsuleをマウントする</a></p>
+</li>
+</ul>
+<p>ネットワーク上にあるTimeCapsuleの共有ディスクを起動時にマウントさせるには/etc/fstabに以下を追加します．</p>
+<pre><code>/<span class="regexp">/TimeCapsule.local/</span><span class="constant">TimeCapsule</span>/  <span class="regexp">/media/timecapsule</span>  cifs  password=macintosh,rw,iocharset=utf8,file_mode=<span class="number">0777</span>,dir_mode=<span class="number">0777</span>,sec=ntlm</code></pre>
+<p>* 12.10では必要ありませんでしたが13.04では<code>sec=ntlm</code>オプションが必要です．</p>
+<ul>
+<li><h3 id="ntfs-">NTFSディスクをマウントする</h3>
+<p><code>/dev/sdc1</code>にあるntfsフォーマットのドライブをマウントさせる場合は以下を<code>/etc/fstab</code>に追加します．</p>
+<pre><code>  <span class="regexp">/dev/sdc1                  /media/</span>ntfsdrive      ntfs      defaults      <span class="number">0</span>    <span class="number">0</span></code></pre>
+</li>
+</ul>
+<h2 id="wifi-hiccup-">Wifiのhiccup（しゃっくり）を直す</h2>
+<p><a href="http://askubuntu.com/questions/286079/rtl8188cu-usb-network-adaptor-on-ubuntu-13-04">http://askubuntu.com/questions/286079/rtl8188cu-usb-network-adaptor-on-ubuntu-13-04</a></p>
+<p>12.10の頃からの症状ですが，Ubuntuが用意するRTL8192CUドライバの調子が悪いせいでWifi接続が一定の時間経過後に切れてしまいます．12.10ではRealteckで公開されている古いバージョンを導入すると直ったのですが，13.04ではダメな模様．そのかわり<a href="https://code.google.com/p/realtek-8188cus-wireless-drivers-3444749-ubuntu-1304/">こちら</a>で公開されている修正パッチを当てたものを導入すれば問題なく使えるようになりました．</p>
+<ul>
+<li><p>rtl8192cuドライバが使用されているか確認する</p>
+<pre><code>  <span class="variable">$ </span>lsmod | grep <span class="number">8192</span></code></pre>
+<p><code>rtl8192cu</code>などの情報が帰ってくればOK．</p>
+</li>
+<li><p><a href="https://code.google.com/p/realtek-8188cus-wireless-drivers-3444749-ubuntu-1304/downloads/list">こちら</a>からrtl8192cu-tjp-dkms_1.6_all.debをダウンロードしたらインストールする．</p>
+<pre><code>  dpkg -<span class="built_in">i</span> ~/Downloads/rtl8192cu-tjp-<span class="transposed_variable">dkms_1.</span><span class="number">6</span><span class="transposed_variable">_all.</span>deb</code></pre>
+</li>
+<li><p><code>/etc/modprobe.d/blacklist.conf</code>に以下を加えて，Ubuntuが用意したドライバを使用させないようにする．</p>
+<pre><code>  <span class="comment"># Blacklist native RealTek 8188CUs drivers</span>
+  <span class="title">blacklist</span> rtl8192cu
+  blacklist rtl8192c_common
+  blacklist rtlwifi</code></pre>
+</li>
+</ul>
+<h2 id="-">ファン制御を設定する</h2>
+<p>まず<code>lm-sensors</code>と<code>fancontrol</code>をインストールします．</p>
+<pre><code>$ su<span class="operator"><span class="keyword">do</span> apt-<span class="keyword">get</span> install lm-sensors fancontrol</code></pre>
+<p>次を実行してセンサーを検出します．</p>
+<pre><code><span class="variable">$ </span>sensors-detect</code></pre>
+<p>いろいろ聞かれますがだいたいイエスでOK．完了したら再起動をして次を実行します．(再起動なしではno pwm-capable sensorsというエラーが出ることがあります．)</p>
+<pre><code><span class="char">$ </span>sudo service fancontrol stop // ファン制御が動いていないことを確認
+<span class="char">$ </span>sudo pwmconfig</code></pre>
+<p>あとは応答する形でファン制御設定をしていけばOK．</p>
+<h2 id="burg-plymouth-">burg(ブートローダ)とPlymouth(スプラッシュスクリーン)を設定</h2>
+<ul>
+<li><h3 id="burg-">burgを設定する</h3>
+<a href="http://iaarchiver.net/post/2011-12-29-1200">burgのインストール</a></li>
+</ul>
+<pre><code>$ su<span class="operator"><span class="keyword">do</span> <span class="keyword">add</span>-apt-repository ppa:n-muench/burg
+$ sudo apt-<span class="keyword">get</span> <span class="keyword">update</span>
+$ sudo apt-<span class="keyword">get</span> install burg</code></pre>
+<p>MBRで指定している起動ディスク（<code>/dev/sda</code>）へBurgを設定します．</p>
+<pre><code>$ su<span class="operator"><span class="keyword">do</span> burg-install <span class="string">"/dev/sda"</span>
+$ sudo <span class="keyword">update</span>-burg</code></pre>
+<p>起動をエミュレートして確認します．</p>
+<pre><code>$ su<span class="operator"><span class="keyword">do</span> burg-emu -D</code></pre>
+<p>burgのローディング画面で<code>t</code>を押すとテーマの選択ができます．（その他コマンドは<code>h</code>で確認できます．）独自にテーマを用意する場合は<code>/boot/burg/themes</code>に置いておく必要があります．</p>
+<ul>
+<li><h3 id="plymouth-">Plymouthを設定する</h3>
+<a href="http://www.ubunturoot.com/2010/08/paw-ubuntu-and-os-x-like-plymouth-theme.html">http://www.ubunturoot.com/2010/08/paw-ubuntu-and-os-x-like-plymouth-theme.html</a></li>
+</ul>
+<p>テーマのインストールと設定は上記参照．</p>
+<p><strong>テーマが適用されない場合</strong><br>解像度が対応していないことが原因である可能性があります．そこで予め解像度を指定してやります．</p>
+<pre><code>$ su<span class="operator"><span class="keyword">do</span> gedit /etc/<span class="keyword">default</span>/burg
+// grubを使用している場合は /etc/<span class="keyword">default</span>/grub</code></pre>
+<p>以下を追加します．</p>
+<pre><code><span class="setting">GRUB_GFXPAYLOAD_LINUX=<span class="value"><span class="string">"1024x768"</span></span></span></code></pre>
+<p>その後コンソールから</p>
+<pre><code>$ su<span class="operator"><span class="keyword">do</span> <span class="keyword">update</span>-burg</code></pre>
+]]></description><link>http://iaarchiver.github.io/posts/2013-07-11-2000.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-11-2000.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Thu, 11 Jul 2013 11:00:00 GMT</pubDate></item><item><title><![CDATA[yacreader（のソースコード）をいじる]]></title><description><![CDATA[<p><a href="http://www.yacreader.com/">yacreader</a>とは<a href="http://comix.sourceforge.net/">comix</a>よりもリッチな見栄えのコミックビューアです．iPhone版もリリースされて開発が活発なので利用してみました．</p>
 <p>それでもまだ少し機能が足らないところがあったのでソースをいじったのでメモ．</p>
-<h2>yacreaderのダウンロード</h2>
+<h2 id="yacreader-">yacreaderのダウンロード</h2>
 <p>Linux版ではlibpoppler-qt4が必要です．予め<code>sudo apt-get install libpoppler-qt4-dev</code>でインストールしておきます．本体は<a href="http://www.yacreader.com/downloads">こちら</a>からダウンロードすることができます．</p>
-<h2>ソースコードをコンパイルする</h2>
+<h2 id="-">ソースコードをコンパイルする</h2>
 <ol>
 <li><p>現在はBitbucket上で開発されているようですのでそこからソースコードをクローンします．</p>
 <pre><code> <span class="variable">$ </span>hg clone <span class="symbol">https:</span>/<span class="regexp">/bitbucket.org/luisangelsm</span><span class="regexp">/yacreader</code></pre>
@@ -136,15 +177,17 @@
 <pre><code><span class="variable">$ </span>.<span class="regexp">/compileX11.sh</code></pre>
 <p>成功するとクローンしたフォルダ内に<code>YACReader- X11--qt4</code>というフォルダ作成され，中にutilsフォルダ，YACReader, YACReaderLibraryがあるはずです．</p>
 <blockquote>
-<p>コンパイルに失敗する場合<br>    - g++とかgccが無いって言われる → <code>sudo apt-get install build-essential</code><br>    - 入れたのにphononが無いって言われる → <code>qmake -v</code>でQtVersionが5になっているかも．<code>.compileX11.sh</code>をエディタで開き，<code>qmake</code>をすべて<code>qmake-qt4</code>に変えて再びコンパイルする．</p>
+<p>コンパイルに失敗する場合  </p>
+<pre><code>- g++とかgccが無いって言われる → `su<span class="operator"><span class="keyword">do</span> apt-<span class="keyword">get</span> install build-essential<span class="string">`  
+- 入れたのにphononが無いって言われる → `</span>qmake -v<span class="string">`でQtVersionが5になっているかも．`</span>.compileX11.sh<span class="string">`をエディタで開き，`</span>qmake<span class="string">`をすべて`</span>qmake-qt4<span class="string">`に変えて再びコンパイルする．</code></pre>
 </blockquote>
-<h2>ソースコードをいじる</h2>
+<h2 id="-">ソースコードをいじる</h2>
 <blockquote>
 <p><strong> 以下，yacreader6.5.3をもとに変更を行なっています</strong></p>
 </blockquote>
 <p>現状のYACReaderでは少し機能の足らない部分があるのでソースコードをいじってしまいます．（これらの変更は今後開発が進めば必要なくなるかもしれません．）</p>
 <ol>
-<li><h3>見開き表示にしたときに左右ページの順序が逆になるのを直したい．（海外コミックは横書き＝左とじなため）</h3>
+<li><h3 id="-">見開き表示にしたときに左右ページの順序が逆になるのを直したい．（海外コミックは横書き＝左とじなため）</h3>
 <p><code>yacreader/YACReader/render.cpp</code>の430行付近を以下のように変更．</p>
 <pre><code> QImage auxImg(totalWidth,totalHeight,QImage::Format_RGB32)<span class="comment">;</span>
      QPainter painter(&amp;auxImg)<span class="comment">;</span>
@@ -159,7 +202,7 @@
  +    }
      painter<span class="preprocessor">.end</span>()<span class="comment">;</span></code></pre>
 </li>
-<li><h3>ページ移動に必要なホイールの移動量を２目盛りから1目盛りへ変えたい．</h3>
+<li><h3 id="-1-">ページ移動に必要なホイールの移動量を２目盛りから1目盛りへ変えたい．</h3>
 <p><code>yacreader/YACReader/viewer.cpp</code>の370行付近を以下のように変更</p>
 <pre><code> void Viewer::wheelEvent(QWheelEvent * event)
  {
@@ -197,7 +240,7 @@
              }
          }</code></pre>
 </li>
-<li><h3>カバーが横長の場合は90度回転して欲しい</h3>
+<li><h3 id="-90-">カバーが横長の場合は90度回転して欲しい</h3>
 <ul>
 <li><p><strong>hardwareAccelarationなしのとき</strong><br><code>yacreader/common/pictureflow.cpp</code>の600行あたりを以下のように変更</p>
 <pre><code>  static QImage* prepareSurface(const QImage* slideImage, int w, int h, QRgb bgcolor,
@@ -275,162 +318,121 @@
 </li>
 </ol>
 <p>ソースコードをいじったら再度<code>./compileX11.sh</code>を実行してコンパイルをすると変化が確認できます．</p>
-]]></description><link>http://iaarchiver.github.io/posts/2013-07-09-1703.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-09-1703.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Tue, 09 Jul 2013 08:03:00 GMT</pubDate></item><item><title><![CDATA[Ubuntu13.04インストールおぼえがき]]></title><description><![CDATA[<h2>USBメモリからインストール</h2>
-<p><a href="http://www.ubuntu.com/download/desktop/create-a-usb-stick-on-ubuntu">http://www.ubuntu.com/download/desktop/create-a-usb-stick-on-ubuntu</a><br>ブート可能なUSBメモリの作成方法が詳しく紹介されています．</p>
-<h2>インストール後にまずすること</h2>
+]]></description><link>http://iaarchiver.github.io/posts/2013-07-09-1703.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-09-1703.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Tue, 09 Jul 2013 08:03:00 GMT</pubDate></item><item><title><![CDATA[GuitarPro6を64bit環境にインストールする]]></title><description><![CDATA[<p>正式にサポートされているのは32bitマシンだけなのですが，無理やりインストールできそうでしたのでやってみました．</p>
+<ol>
+<li><h3 id="gp6-full-linux-deb-">gp6-full-linux-*.debファイルを用意</h3>
+<p>linux用インストーラを<a href="http://www.guitar-pro.com/">http://www.guitar-pro.com/</a>のサポートページからダウンロードします．（日本で代理販売をしているイーフロンティアではLinux版は元々サポートしていないので本家のサポートページでライセンスを登録する必要があります．）</p>
+</li>
+<li><h3 id="-">依存関係を解決</h3>
+<p>依存関係にあるライブラリを確認します．</p>
+<pre><code> <span class="comment">$</span> <span class="comment">dpkg</span> <span class="literal">-</span><span class="comment">I</span> <span class="comment">gp6</span>-<span class="comment">full</span>-<span class="comment">linux</span>-<span class="comment">r11553</span>.<span class="comment">deb</span>        </code></pre>
+<p>depends欄に書かれているものをSynapticsもしくは<code>$ sudo apt-get install ...</code>でインストールしておきます．</p>
+<blockquote>
+<p><strong><code>$ sudo dpkg -i gp6-full-linux-*.deb</code>でインストールしようとしてはダメ</strong><br />&#39;You have 1 broken package on your system! Use &quot;Broken&quot; filter to locate it&#39;というエラーがSynapticsで出るようになります．Edit &gt; Fix Broken Packagesを選択してApplyすると壊れたGP6パッケージを削除できます．（このときsudoが消せないというエラーが出ますがこれは無視しても大丈夫．）しかし，GP6が既にインストールできていた場合は，GP6の再インストールが必要になるので注意．</p>
+</blockquote>
+</li>
+<li><h3 id="-opt-">/opt/へ本体をコピー</h3>
+<p>gp6-full-linux-*.debを解凍してGuitarPro6本体を<code>/opt/</code>へコピーします．</p>
+<pre><code> <span class="comment">$</span> <span class="comment">dpkg</span> <span class="literal">-</span><span class="comment">x</span> <span class="comment">gp6</span>-<span class="comment">full</span>-<span class="comment">linux</span>-<span class="comment">\*</span>.<span class="comment">deb</span> <span class="comment">~/temp</span>
+ <span class="comment">$</span> <span class="comment">sudo</span> <span class="comment">cp</span> <span class="literal">-</span><span class="comment">R</span> <span class="comment">~/temp/opt/GuitarPro6</span> <span class="comment">/opt/</code></pre>
+<p>ちなみに.debファイルの解凍はArchiveManagerでもできます．</p>
+</li>
+<li><h3 id="getlib-all-deb-">getlib-all.debをインストール</h3>
+<p>getlibsは64bit環境に32bit用アプリをインストールする際に必要なライブラリをインストールするためのユーティリティソフト（らしい）です．現状ではlaunchpadでmaintainされていないようですが，<a href="http://jeffhendricks.net/?p=68">こちらのページ</a>からダウンロードできました．ダブルクリックでSoftwareCenterからインストールするか<code>dpkg -i getlibs-all.deb</code>でインストールします．</p>
+</li>
+<li><h3 id="getlibs-">getlibsする</h3>
+<p>以上が完了したら以下を実行します．</p>
+<pre><code> <span class="variable">$ </span>getlibs /opt/<span class="constant">GuitarPro</span>/<span class="constant">GuitarPro</span></code></pre>
+</li>
+<li><h3 id="guitarpro6-">GuitarPro6を起動</h3>
+<p>エラーなくgetlibsできたらGuitarPro6を起動します．</p>
+<pre><code> <span class="variable">$ </span>/opt/<span class="constant">GuitarPro</span>/launcher.sh</code></pre>
+<p>起動が確認できたらアップデータで最新のものへしてやりましょう．（アップデータの起動にエラーが出るときはgksudoがインストールされてない可能性があります．）</p>
+</li>
+<li><h3 id="-">エラーなど</h3>
 <ul>
-<li><strong>Software Updaterでアップデートする．</strong><br>OS本体のインストールより時間がかかります．</li>
-<li><strong>AdditionalDriversをインストール</strong><br>System Settings &gt; Software &amp; Updates &gt; Additional Driversから環境にあったドライバをインストールします．Nvidiaを使用しているなら再起動でNvidia X Server Settingsから細かい環境設定が行えるようになります．</li>
-<li><strong>日本語環境の構築</strong><br>Language Support &gt; install/Remove LanguagesからJapaneseを選択してインストールします．デフォルトを日本語に変更したい場合は，Languages for menus and windowsで日本語を先頭にドラッグし，Apply System-Wideを押すと再起動後に変更されます．</li>
-<li><strong>日本語入力を可能にする</strong><br><code>$ sudo apt-get install ibus-mozc</code>をibus-mozcをインストール後，Language Support &gt; Keyboard input method system にibusを選択すると起動時にibusを起動してくれます．</li>
-</ul>
-<h2>fstabの編集</h2>
-<p>起動時に自動的にマウントさせるドライブを設定します．</p>
-<ul>
-<li><h3>HDDを/homeにマウントする</h3>
-<p>ext4でフォーマットした<code>/dev/sdb1</code>というパスのパーティションを/homeとしてマウントさせたい場合，以下のような設定をfstabに加えます．</p>
-<pre><code>  <span class="regexp">/dev/sdb1                  /</span>home          ext4      defaults,user_xattr      <span class="number">0</span>    <span class="number">0</span></code></pre>
+<li><p><strong><code>/opt/GuitarPro6/launcher.sh</code>が以下のエラーメッセージを出して起動しない</strong>  </p>
+<pre><code>./GuitarPro: error <span class="keyword">while</span> loading <span class="keyword">shared</span> libraries: libportaudio.so<span class="number">.2</span>: cannot <span class="keyword">open</span> <span class="keyword">shared</span> object <span class="keyword">file</span>: No such <span class="keyword">file</span> <span class="keyword">or</span> directory</code></pre>
+<p>getlibsがlibportaudio2をカバーできていないことが原因．<code>sudo apt-get install libportaudio2:i386</code>で個別にインストールしてやります．</p>
 </li>
-<li><h3>TimeCapsuleをマウントする</h3>
-<p>参考：<a href="http://iaarchiver.github.io/posts/2013-07-11-2152.html">Ubuntu13.04でTimeCapsuleをマウントする</a></p>
+<li><p><strong>アップデータが起動しない</strong><br>gksudoがインストールされていない可能性があります．</p>
 </li>
-</ul>
-<p>ネットワーク上にあるTimeCapsuleの共有ディスクを起動時にマウントさせるには/etc/fstabに以下を追加します．</p>
-<pre><code>/<span class="regexp">/TimeCapsule.local/</span><span class="constant">TimeCapsule</span>/  <span class="regexp">/media/timecapsule</span>  cifs  password=macintosh,rw,iocharset=utf8,file_mode=<span class="number">0777</span>,dir_mode=<span class="number">0777</span>,sec=ntlm</code></pre>
-<p>* 12.10では必要ありませんでしたが13.04では<code>sec=ntlm</code>オプションが必要です．</p>
-<ul>
-<li><h3>NTFSディスクをマウントする</h3>
-<p><code>/dev/sdc1</code>にあるntfsフォーマットのドライブをマウントさせる場合は以下を<code>/etc/fstab</code>に追加します．</p>
-<pre><code>  <span class="regexp">/dev/sdc1                  /media/</span>ntfsdrive      ntfs      defaults      <span class="number">0</span>    <span class="number">0</span></code></pre>
-</li>
-</ul>
-<h2>Wifiのhiccup（しゃっくり）を直す</h2>
-<p><a href="http://askubuntu.com/questions/286079/rtl8188cu-usb-network-adaptor-on-ubuntu-13-04">http://askubuntu.com/questions/286079/rtl8188cu-usb-network-adaptor-on-ubuntu-13-04</a></p>
-<p>12.10の頃からの症状ですが，Ubuntuが用意するRTL8192CUドライバの調子が悪いせいでWifi接続が一定の時間経過後に切れてしまいます．12.10ではRealteckで公開されている古いバージョンを導入すると直ったのですが，13.04ではダメな模様．そのかわり<a href="https://code.google.com/p/realtek-8188cus-wireless-drivers-3444749-ubuntu-1304/">こちら</a>で公開されている修正パッチを当てたものを導入すれば問題なく使えるようになりました．</p>
-<ul>
-<li><p>rtl8192cuドライバが使用されているか確認する</p>
-<pre><code>  <span class="variable">$ </span>lsmod | grep <span class="number">8192</span></code></pre>
-<p><code>rtl8192cu</code>などの情報が帰ってくればOK．</p>
-</li>
-<li><p><a href="https://code.google.com/p/realtek-8188cus-wireless-drivers-3444749-ubuntu-1304/downloads/list">こちら</a>からrtl8192cu-tjp-dkms_1.6_all.debをダウンロードしたらインストールする．</p>
-<pre><code>  dpkg -<span class="built_in">i</span> ~/Downloads/rtl8192cu-tjp-<span class="transposed_variable">dkms_1.</span><span class="number">6</span><span class="transposed_variable">_all.</span>deb</code></pre>
-</li>
-<li><p><code>/etc/modprobe.d/blacklist.conf</code>に以下を加えて，Ubuntuが用意したドライバを使用させないようにする．</p>
-<pre><code>  <span class="comment"># Blacklist native RealTek 8188CUs drivers</span>
-  <span class="title">blacklist</span> rtl8192cu
-  blacklist rtl8192c_common
-  blacklist rtlwifi</code></pre>
+<li><p><strong>アップデートしたら<code>./GuitarPro: /opt/GuitarPro6/./libz.so.1: version `ZLIB_1.2.3.3&#39; not found (required by /usr/lib/i386-linux-gnu/libxml2.so.2)</code>というエラーが出て起動しない</strong><br>  sudo rm /opt/GuitarPro6/libz.so.1`で消してやれば問題ないもよう．</p>
 </li>
 </ul>
-<h2>ファン制御を設定する</h2>
-<p>まず<code>lm-sensors</code>と<code>fancontrol</code>をインストールします．</p>
-<pre><code>$ su<span class="operator"><span class="keyword">do</span> apt-<span class="keyword">get</span> install lm-sensors fancontrol</code></pre>
-<p>次を実行してセンサーを検出します．</p>
-<pre><code><span class="variable">$ </span>sensors-detect</code></pre>
-<p>いろいろ聞かれますがだいたいイエスでOK．完了したら再起動をして次を実行します．(再起動なしではno pwm-capable sensorsというエラーが出ることがあります．)</p>
-<pre><code><span class="char">$ </span>sudo service fancontrol stop // ファン制御が動いていないことを確認
-<span class="char">$ </span>sudo pwmconfig</code></pre>
-<p>あとは応答する形でファン制御設定をしていけばOK．</p>
-<h2>burg(ブートローダ)とPlymouth(スプラッシュスクリーン)を設定</h2>
-<ul>
-<li><h3>burgを設定する</h3>
-<a href="http://iaarchiver.net/post/2011-12-29-1200">burgのインストール</a></li>
-</ul>
-<pre><code>$ su<span class="operator"><span class="keyword">do</span> <span class="keyword">add</span>-apt-repository ppa:n-muench/burg
-$ sudo apt-<span class="keyword">get</span> <span class="keyword">update</span>
-$ sudo apt-<span class="keyword">get</span> install burg</code></pre>
-<p>MBRで指定している起動ディスク（<code>/dev/sda</code>）へBurgを設定します．</p>
-<pre><code>$ su<span class="operator"><span class="keyword">do</span> burg-install <span class="string">"/dev/sda"</span>
-$ sudo <span class="keyword">update</span>-burg</code></pre>
-<p>起動をエミュレートして確認します．</p>
-<pre><code>$ su<span class="operator"><span class="keyword">do</span> burg-emu -D</code></pre>
-<p>burgのローディング画面で<code>t</code>を押すとテーマの選択ができます．（その他コマンドは<code>h</code>で確認できます．）独自にテーマを用意する場合は<code>/boot/burg/themes</code>に置いておく必要があります．</p>
-<ul>
-<li><h3>Plymouthを設定する</h3>
-<a href="http://www.ubunturoot.com/2010/08/paw-ubuntu-and-os-x-like-plymouth-theme.html">http://www.ubunturoot.com/2010/08/paw-ubuntu-and-os-x-like-plymouth-theme.html</a></li>
-</ul>
-<p>テーマのインストールと設定は上記参照．</p>
-<p><strong>テーマが適用されない場合</strong><br>解像度が対応していないことが原因である可能性があります．そこで予め解像度を指定してやります．</p>
-<pre><code>$ su<span class="operator"><span class="keyword">do</span> gedit /etc/<span class="keyword">default</span>/burg
-// grubを使用している場合は /etc/<span class="keyword">default</span>/grub</code></pre>
-<p>以下を追加します．</p>
-<pre><code><span class="setting">GRUB_GFXPAYLOAD_LINUX=<span class="value"><span class="string">"1024x768"</span></span></span></code></pre>
-<p>その後コンソールから</p>
-<pre><code>$ su<span class="operator"><span class="keyword">do</span> <span class="keyword">update</span>-burg</code></pre>
-]]></description><link>http://iaarchiver.github.io/posts/2013-07-11-2000.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-11-2000.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Thu, 11 Jul 2013 11:00:00 GMT</pubDate></item><item><title><![CDATA[Ubuntu13.04でTimeCapsuleをマウントする]]></title><description><![CDATA[<p><a href="http://askubuntu.com/questions/285874/how-can-i-mount-cifs-shares-in-kubuntu-13-04">http://askubuntu.com/questions/285874/how-can-i-mount-cifs-shares-in-kubuntu-13-04</a></p>
-<p>12.10のときと若干変更があったのでメモ．確認環境は13.04(64bit)，TimeCapsuleの共有ディスクはデバイスパスワードでアクセス制限している状態です．</p>
-<p>予め<code>sudo apt-get install samba cifs-utils</code>を実行してsambaとcifs-utilsをインストールを確認しておきます．</p>
-<h2>TimeCapsuleのホスト名，IPアドレスをまずは確認する．</h2>
-<p>TimeCapsuleのIPアドレスやホスト名はmac上でAirmacユーティリティを使用することで確認できますが，Ubuntuから確認するには以下を実行します．</p>
-<pre><code><span class="comment">$</span> <span class="comment">avahi</span>-<span class="comment">browse</span> <span class="literal">-</span><span class="comment">a</span> <span class="literal">-</span><span class="comment">p</code></pre>
-<p>Bonjourネットワークに存在するすべてのホスト情報が一覧で表示されますので，その中からTimeCapsuleのものと思われるホスト名（hostname）とローカルIPアドレス（address）を確認します．</p>
-<pre><code><span class="keyword">...</span>
-=  wlan0 IPv4 TimeCapsule                                   Apple AirPort        local
-   hostname = [TimeCapsule.local]
-   address = [<span class="number">192.168</span><span class="number">.0</span><span class="number">.1</span>]
-   port = [<span class="number">5009</span>]
-<span class="keyword">...</span></code></pre>
-<p>このような表示が見つかれば，<code>TimeCapsule.local</code>，もしくは<code>192.168.0.1</code>でTimeCapsuleにアクセスすることが確認できます．</p>
-<h2>端末からマウントさせる</h2>
-<p><code>TimeCapsule.local</code>というホスト名のTimeCapsuleを<code>/media/timecapsule</code>にマウントさせるには以下を実行します．（予め<code>sudo mkdir /media/timecapsule</code>でマウントポイントのディレクトリを作成しておく必要があります．）</p>
-<pre><code>$ su<span class="operator"><span class="keyword">do</span> mount.cifs //TimeCapsule.<span class="keyword">local</span>/TimeCapsule /media/timecapsule -o pass=PASWORD,rw,iocharset=utf8,file_mode=<span class="number">0777</span>,dir_mode=<span class="number">0777</span>,sec=ntlm</code></pre>
-<p><code>//TimeCapsule.local/</code>の部分は<code>//192.168.0.1/</code>のようにローカルIPアドレスで指定しても構いません．（13.04では<code>sec=ntlm</code>オプションが必要になりました．）</p>
-<p>アンマウントさせる場合は以下を実行します．</p>
-<pre><code>$ su<span class="operator"><span class="keyword">do</span> umount /media/timecapsule</code></pre>
-<h2>fstabで自動マウントさせる</h2>
-<p>起動時にマウントさせるには<code>/etc/fstab</code>に以下の行を追加します．</p>
-<pre><code>/<span class="regexp">/TimeCapsule.local/</span><span class="constant">TimeCapsule</span>/  <span class="regexp">/media/timecapsule</span>  cifs password=macintosh,rw,iocharset=utf8,file_mode=<span class="number">0777</span>,dir_mode=<span class="number">0777</span>,sec=ntlm</code></pre>
-<p>追加後，再起動もしくは<code>sudo mount -a</code>を実行でマウントが確認できれば成功です．</p>
-]]></description><link>http://iaarchiver.github.io/posts/2013-07-11-2152.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-11-2152.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Thu, 11 Jul 2013 12:52:00 GMT</pubDate></item><item><title><![CDATA[LinuxからDayOneの読み書きを行う]]></title><description><![CDATA[<p>コマンドラインからテキストをジャーナリングできる<a href="http://maebert.github.io/jrnl/">jrnl</a>というアプリを使用してDayOneのエントリーを読み書きする方法のメモ．</p>
-<p>MacであればDayOneオフィシャルの<a href="http://dayoneapp.com/tools/">コマンドラインツール</a>が使用できるので，それ以外の端末からDayOneエントリーを操作したい人向けです．</p>
-<h2>jrnlのインストールと起動</h2>
-<pre><code>$ su<span class="operator"><span class="keyword">do</span> pip install jrnl
-$ jrnl
-Path <span class="keyword">to</span> your journal file (leave blank <span class="keyword">for</span> ~/journal.txt): 
-Enter password <span class="keyword">for</span> journal (leave blank <span class="keyword">for</span> <span class="keyword">no</span> encryption): 
-[Compose Entry] </code></pre>
-<p>初回起動時に保存先とパスワードを聞かれますが無入力で良いです．この設定は<code>~/.jrnl_config</code>にて変更が可能です．</p>
-<h2>DayOneのエントリーを統合する</h2>
-<p><code>~/.jrnl_config</code>の<code>journals</code>キーを以下のように変更．</p>
-<pre><code>&quot;journals&quot;: {
-    &quot;default&quot;: &quot;/path/to/Journal.dayone/&quot;
-}</code></pre>
-<p><code>Journal.dayone</code>はDayOneのエントリーを保存しているフォルダであり，DayOneの同期先によって異なります．例えばDropboxで同期している場合は<code>/path/to/Dropbox/Apps/Day\ One/Journal.dayone</code>のようになります．</p>
-<h2>KeyError:&#39;Time Zone&#39;が出るとき</h2>
-<p>最新のバージョンのDayOneではすべての新規エントリーにタイムゾーンが付与される仕様になっていますが，古いエントリーにタイムゾーンの情報が付与されていないとき，それが原因でエラーが出ます．（jrnl1.4.2で確認．今後修正されるかも）</p>
-<pre><code><span class="keyword">File</span> <span class="string">"/usr/local/lib/python2.7/dist-packages/jrnl/Journal.py"</span>, line <span class="number">316</span>, <span class="keyword">in</span> parse
-timezone = pytz.timezone(dict_entry[<span class="attribute">'Time</span> Zone'])
-KeyError: <span class="attribute">'Time</span> Zone'</code></pre>
-<p>jrnlを起動した際に上のようなエラーが出るときは<code>sudo emacs /usr/local/lib/python2.7/dist-packages/jrnl/Journal.py</code>でエディタを開き，以下のように編集します．</p>
-<pre><code><span class="function"><span class="keyword">def</span> <span class="title">parse</span><span class="params">(self, filenames)</span>:</span>
-    <span class="string">"""Instead of parsing a string into an entry, this method will take a list
-    of filenames, interpret each as a plist file and create a new entry from that."""</span>
-    self.entries = []
-    <span class="keyword">for</span> filename <span class="keyword">in</span> filenames:
-        <span class="keyword">with</span> open(filename, <span class="string">'rb'</span>) <span class="keyword">as</span> plist_entry:
-            dict_entry = plistlib.readPlist(plist_entry)
-            <span class="keyword">try</span>:
-                timezone = pytz.timezone(dict_entry[<span class="string">'Time Zone'</span>])
-  -         <span class="keyword">except</span> pytz.exceptions.UnknownTimeZoneError:
-  +         <span class="keyword">except</span> :
-                timezone = pytz.timezone(util.get_local_timezone())</code></pre>
-<h2>jrnl1.4.2でできること</h2>
-<ul>
-<li>最近追加したエントリーを３件表示<pre><code>  <span class="title">jrnl</span> -n <span class="number">3</span></code></pre>
 </li>
-<li>すべてのエントリーのタイトルのみ表示<pre><code>  <span class="title">jrnl</span> -short</code></pre>
-</li>
-<li>エントリーを追加<pre><code>  <span class="title">jrnl</span>
-  [Compose Entry]
-  <span class="comment"># Enterで入力終了</span></code></pre>
-</li>
-<li>日時とタグを指定してエントリーを追加<pre><code>  <span class="title">jrnl</span> yesterday: 鳩のえさやり @公園</code></pre>
-</li>
-</ul>
-<h2>jrnl1.4.2でできないこと</h2>
+</ol>
+<p>今のところ問題なく動いていますが，今後のアップデートによっては起動しなくなる可能性もあります．Soundbankのインストールに失敗する場合もあるらしく（Ubuntu13.04x86_64では無問題でした），そのWorkaroundが<a href="https://www.linux.com/community/blogs/128-desktops/494464">こちら</a>で紹介されています．</p>
+]]></description><link>http://iaarchiver.github.io/posts/2013-07-09-0731.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-09-0731.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Mon, 08 Jul 2013 22:31:00 GMT</pubDate></item><item><title><![CDATA[grunt-contrib-copyでのパス指定]]></title><description><![CDATA[<p><a href="https://github.com/gruntjs/grunt-contrib-copy/issues/60">https://github.com/gruntjs/grunt-contrib-copy/issues/60</a></p>
+<p>GithubのIssueでも語られていますが，grunt-contrib-copyのパスの指定方法に注意が必要だったのでメモします．</p>
+<p>指定フォルダ内のファイルを階層を維持しながら別の場所へコピーしたい場合<code>cp path/* dest/</code>のつもりで以下のように指定すると思った通りのパスへコピーしてくれません．</p>
+<pre><code>    <span class="method">copy:</span> {
+        <span class="method">dame1:</span> {
+            //ダメ
+            <span class="method">files:</span> [{<span class="method">src:</span> <span class="string">'path/**'</span>, <span class="method">dest:</span> <span class="string">'dest/'</span>}]
+        },
+        <span class="method">dame2:</span> {
+            // これもダメ
+            <span class="method">files:</span> [{<span class="method">expand:</span> <span class="keyword">true</span>, <span class="method">src:</span> [<span class="string">'path/**'</span>], <span class="method">dest:</span> <span class="string">'dest/'</span>}]
+        }
+    }</code></pre>
+<p>上記コードでは<code>dest/path/</code>内に階層を維持しながらファイルがコピーされてしまいます．</p>
+<p>正しくは，</p>
+<pre><code>    <span class="method">copy:</span> {
+        <span class="method">ok:</span> {
+            <span class="method">files:</span> [{<span class="method">expand:</span> <span class="keyword">true</span>, <span class="method">cwd:</span> <span class="string">'path/'</span>, <span class="method">src:</span> [**], <span class="method">dest:</span> <span class="string">'dest/'</span>}]
+        }
+    }</code></pre>
+<p>expandオプションがあると，もし中間のティレクトリが存在しなければ作成してくれます．（mkdirの-pオプション相当）ちなみにこれは<code>cwd</code>オプションでカレントディレクトリを指定した場合のみ有効なオプションのようです．</p>
+]]></description><link>http://iaarchiver.github.io/posts/2013-07-08-2117.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-08-2117.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Mon, 08 Jul 2013 12:17:00 GMT</pubDate></item><item><title><![CDATA[Ubuntuでmpdのセットアップ]]></title><description><![CDATA[<p>Ubuntuでmpdを利用する際にいくつか詰まるところがあったのでメモします．
+運用方法は，Ubuntu起動時にユーザ設定を読み込んでmpdを立ち上げておき，同Ubuntuのsonataで聞く，もしくはローカルネットワークにあるデバイスで聞く，という方法です．</p>
+<h2 id="-">まずはなによりインストール</h2>
+<pre><code>    $ su<span class="operator"><span class="keyword">do</span> apt-<span class="keyword">get</span> install mpd sonata</code></pre>
+<p>必要ならば<code>mpc</code>も合わせてインストールしておきます．</p>
+<h2 id="-mpdconf-"><code>~/.mpdconf</code>を以下の例のように設定．</h2>
+<pre><code>    <span class="title">port</span> <span class="string">"6600"</span>
+    music_directory <span class="string">"~/Music/"</span>
+    playlist_directory <span class="string">"~/.mpd/playlists"</span>
+    db_file <span class="string">"~/.mpd/mpd.db"</span>
+    log_file <span class="string">"~/.mpd/mpd.log"</span>
+    audio_output {
+    <span class="title">type</span> <span class="string">"pulse"</span>
+    name <span class="string">"MPD"</span>
+    }</code></pre>
+<p><code>audio_output</code>はメディアサーバとして運用するなど特定の条件下で無い限り，<code>pulse</code>を選択するほうが良いです．</p>
+<h2 id="mpd-">mpdを起動，そしてエラーメッセージ</h2>
+<pre><code>    $ mpd
+    Failed <span class="keyword">to</span> bind <span class="keyword">to</span> '[::]:<span class="number">6600</span>': Address already <span class="keyword">in</span> <span class="keyword">use</span></code></pre>
+<p>多くの場合このエラーメッセージが表示されます．（出ない場合でも再起動後に遭遇するかもしれません．）</p>
+<p>検索するとこのエラーの解決法について多くのスレッドが見つかりますが，詰まる人が多い理由は以下２つが原因と考えられます．</p>
 <ul>
-<li>過去エントリーの編集，削除（jrnlを経由せずに<code>Journal.dayone</code>フォルダー内の<code>.doentry</code>ファイルを直接編集/削除は可能ですが，同期したMacやiPhoneで操作したほうが良いです．）</li>
-<li>エントリーにメディア（画像，音声など）を追加する</li>
-<li>エントリーの付与されたメディアを表示する</li>
+<li>エラーメッセージの通りに起動自体に失敗しているのか，設定の読み込みに失敗しているだけなのかわかりにくい．</li>
+<li>mpdの起動に成功しても（別のことが原因で）似たようなエラーメッセージが表示される．</li>
 </ul>
-]]></description><link>http://iaarchiver.github.io/posts/2013-07-29-0152.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-29-0152.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Sun, 28 Jul 2013 16:52:00 GMT</pubDate></item></channel></rss>
+<p>...要するに紛らわしいという話です．</p>
+<ol>
+<li><h3 id="sonata-mpd-">sonataでmpdをちゃんと起動できているか確認する</h3>
+<p>sonataを起動し，コンテクストメニューからPreference画面を開いて以下のように設定します．<br><img src="/img/sonata.jpg" alt="sonata"><br>Portは<code>~/.mpdconf</code>で指定したものと同じ値を入力します．また，外部のデバイスから聞く場合はHostをmpdを走らせているマシンのローカルIPアドレスを指定する必要があります．ユーザ設定がきちんと読み込まれていればmpd起動の瞬間に，sonataのLibraryタブに<code>~/.mpdconf</code>で指定したフォルダ内の音楽ファイルが表示されます．</p>
+</li>
+<li><h3 id="-etc-init-d-mpd-"><code>/etc/init.d/mpd</code>がデーモンとして実行されているかどうか確認する</h3>
+<p>mpdをインストールすると<code>/etc/init.d/mpd</code>が作成されて，起動時にスーパーユーザが
+デーモンとしてmpdを実行しています．そしてこのときユーザ設定（<code>~/.mpdconf</code>）ではなく管理者設定（<code>/etc/mpd.conf</code>）のみが読み込まれるため，このままではsonataを起動してもLibraryタブに先ほど指定した音楽ファイルが表示されません．
+このときは以下を実行してユーザ権限でmpdを再起動させます．</p>
+<pre><code> <span class="char">$ </span>sudo service mpd stop
+ # もしくは <span class="char">$ </span>sudo /etc/init.d/mpd stop
+ <span class="char">$ </span>mpd
+ <span class="method">listen:</span> bind to <span class="string">'0.0.0.0:6600'</span> <span class="method">failed:</span> <span class="class">Address</span> already in use (continuing anyway, because binding to <span class="string">'[::]:6600'</span> succeeded)</code></pre>
+<p>さきほどと似たようなエラーメッセージが出てはいますが，sonataを起動してLibraryタブに指定した音楽フォルダの中身が反映されている場合，mpdは無事起動しています．</p>
+<blockquote>
+<p>このエラーメッセージは，ipv6でのバインドを試行して失敗したこと原因のようです．その後にIPv4でバインドに成功しているため問題はありませんが，このメッセージを消したい場合，<code>~/.mpdconf</code>に以下の設定を加えてIPv4でのバインドを指定してやります．<br> 参考：<a href="https://wiki.archlinux.org/index.php/Music_Player_Daemon/Troubleshooting">https://wiki.archlinux.org/index.php/Music_Player_Daemon/Troubleshooting</a></p>
+<pre><code> <span class="title">bind_to_address</span> <span class="string">"127.0.0.1"</span></code></pre>
+</blockquote>
+</li>
+<li><h3 id="-mpd-">起動時にスーパーユーザがmpdを起動させないようにする</h3>
+<p>起動時にmpdをユーザ設定を読み込んだ上で起動するためには，まずスーパーユーザがmpdを起動させないようにする必要があります．これは<code>/etc/mpd.conf</code>にユーザ設定を直接書いてしまったり，<code>/etc/init.d/mpd</code>をリネームもしくは削除してしまうことで実現できてしまいますが，あまり望ましい方法ではありません．<code>/etc/init.d</code>に登録されながらも自動起動をオフするには以下のようにします</p>
+<pre><code> su<span class="operator"><span class="keyword">do</span> <span class="keyword">update</span>-rc.d mpd disable</code></pre>
+<p>オンにしたい場合は<code>disable</code>を<code>enable</code>に変えて実行します．</p>
+</li>
+</ol>
+<p>これで自動起動がオフにできたら，DashメニューからStartupApplicationにmpdコマンドを追加することで，ログイン時にユーザ設定を読み込んだ状態でmpdを起動してくれます．</p>
+]]></description><link>http://iaarchiver.github.io/posts/2013-07-08-1730.html</link><guid isPermaLink="true">http://iaarchiver.github.io/posts/2013-07-08-1730.html</guid><dc:creator><![CDATA[iaarchiver]]></dc:creator><pubDate>Mon, 08 Jul 2013 08:30:00 GMT</pubDate></item></channel></rss>

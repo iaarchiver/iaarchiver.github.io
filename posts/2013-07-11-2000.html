@@ -103,23 +103,23 @@
   <hr>
   </div>
   <div class="post-content">
-    <h2>USBメモリからインストール</h2>
+    <h2 id="usb-">USBメモリからインストール</h2>
 <p><a href="http://www.ubuntu.com/download/desktop/create-a-usb-stick-on-ubuntu">http://www.ubuntu.com/download/desktop/create-a-usb-stick-on-ubuntu</a><br>ブート可能なUSBメモリの作成方法が詳しく紹介されています．</p>
-<h2>インストール後にまずすること</h2>
+<h2 id="-">インストール後にまずすること</h2>
 <ul>
 <li><strong>Software Updaterでアップデートする．</strong><br>OS本体のインストールより時間がかかります．</li>
 <li><strong>AdditionalDriversをインストール</strong><br>System Settings &gt; Software &amp; Updates &gt; Additional Driversから環境にあったドライバをインストールします．Nvidiaを使用しているなら再起動でNvidia X Server Settingsから細かい環境設定が行えるようになります．</li>
 <li><strong>日本語環境の構築</strong><br>Language Support &gt; install/Remove LanguagesからJapaneseを選択してインストールします．デフォルトを日本語に変更したい場合は，Languages for menus and windowsで日本語を先頭にドラッグし，Apply System-Wideを押すと再起動後に変更されます．</li>
 <li><strong>日本語入力を可能にする</strong><br><code>$ sudo apt-get install ibus-mozc</code>をibus-mozcをインストール後，Language Support &gt; Keyboard input method system にibusを選択すると起動時にibusを起動してくれます．</li>
 </ul>
-<h2>fstabの編集</h2>
+<h2 id="fstab-">fstabの編集</h2>
 <p>起動時に自動的にマウントさせるドライブを設定します．</p>
 <ul>
-<li><h3>HDDを/homeにマウントする</h3>
+<li><h3 id="hdd-home-">HDDを/homeにマウントする</h3>
 <p>ext4でフォーマットした<code>/dev/sdb1</code>というパスのパーティションを/homeとしてマウントさせたい場合，以下のような設定をfstabに加えます．</p>
 <pre><code>  <span class="regexp">/dev/sdb1                  /</span>home          ext4      defaults,user_xattr      <span class="number">0</span>    <span class="number">0</span></code></pre>
 </li>
-<li><h3>TimeCapsuleをマウントする</h3>
+<li><h3 id="timecapsule-">TimeCapsuleをマウントする</h3>
 <p>参考：<a href="http://iaarchiver.github.io/posts/2013-07-11-2152.html">Ubuntu13.04でTimeCapsuleをマウントする</a></p>
 </li>
 </ul>
@@ -127,12 +127,12 @@
 <pre><code>/<span class="regexp">/TimeCapsule.local/</span><span class="constant">TimeCapsule</span>/  <span class="regexp">/media/timecapsule</span>  cifs  password=macintosh,rw,iocharset=utf8,file_mode=<span class="number">0777</span>,dir_mode=<span class="number">0777</span>,sec=ntlm</code></pre>
 <p>* 12.10では必要ありませんでしたが13.04では<code>sec=ntlm</code>オプションが必要です．</p>
 <ul>
-<li><h3>NTFSディスクをマウントする</h3>
+<li><h3 id="ntfs-">NTFSディスクをマウントする</h3>
 <p><code>/dev/sdc1</code>にあるntfsフォーマットのドライブをマウントさせる場合は以下を<code>/etc/fstab</code>に追加します．</p>
 <pre><code>  <span class="regexp">/dev/sdc1                  /media/</span>ntfsdrive      ntfs      defaults      <span class="number">0</span>    <span class="number">0</span></code></pre>
 </li>
 </ul>
-<h2>Wifiのhiccup（しゃっくり）を直す</h2>
+<h2 id="wifi-hiccup-">Wifiのhiccup（しゃっくり）を直す</h2>
 <p><a href="http://askubuntu.com/questions/286079/rtl8188cu-usb-network-adaptor-on-ubuntu-13-04">http://askubuntu.com/questions/286079/rtl8188cu-usb-network-adaptor-on-ubuntu-13-04</a></p>
 <p>12.10の頃からの症状ですが，Ubuntuが用意するRTL8192CUドライバの調子が悪いせいでWifi接続が一定の時間経過後に切れてしまいます．12.10ではRealteckで公開されている古いバージョンを導入すると直ったのですが，13.04ではダメな模様．そのかわり<a href="https://code.google.com/p/realtek-8188cus-wireless-drivers-3444749-ubuntu-1304/">こちら</a>で公開されている修正パッチを当てたものを導入すれば問題なく使えるようになりました．</p>
 <ul>
@@ -150,7 +150,7 @@
   blacklist rtlwifi</code></pre>
 </li>
 </ul>
-<h2>ファン制御を設定する</h2>
+<h2 id="-">ファン制御を設定する</h2>
 <p>まず<code>lm-sensors</code>と<code>fancontrol</code>をインストールします．</p>
 <pre><code>$ su<span class="operator"><span class="keyword">do</span> apt-<span class="keyword">get</span> install lm-sensors fancontrol</code></pre>
 <p>次を実行してセンサーを検出します．</p>
@@ -159,9 +159,9 @@
 <pre><code><span class="char">$ </span>sudo service fancontrol stop // ファン制御が動いていないことを確認
 <span class="char">$ </span>sudo pwmconfig</code></pre>
 <p>あとは応答する形でファン制御設定をしていけばOK．</p>
-<h2>burg(ブートローダ)とPlymouth(スプラッシュスクリーン)を設定</h2>
+<h2 id="burg-plymouth-">burg(ブートローダ)とPlymouth(スプラッシュスクリーン)を設定</h2>
 <ul>
-<li><h3>burgを設定する</h3>
+<li><h3 id="burg-">burgを設定する</h3>
 <a href="http://iaarchiver.net/post/2011-12-29-1200">burgのインストール</a></li>
 </ul>
 <pre><code>$ su<span class="operator"><span class="keyword">do</span> <span class="keyword">add</span>-apt-repository ppa:n-muench/burg
@@ -174,7 +174,7 @@ $ sudo <span class="keyword">update</span>-burg</code></pre>
 <pre><code>$ su<span class="operator"><span class="keyword">do</span> burg-emu -D</code></pre>
 <p>burgのローディング画面で<code>t</code>を押すとテーマの選択ができます．（その他コマンドは<code>h</code>で確認できます．）独自にテーマを用意する場合は<code>/boot/burg/themes</code>に置いておく必要があります．</p>
 <ul>
-<li><h3>Plymouthを設定する</h3>
+<li><h3 id="plymouth-">Plymouthを設定する</h3>
 <a href="http://www.ubunturoot.com/2010/08/paw-ubuntu-and-os-x-like-plymouth-theme.html">http://www.ubunturoot.com/2010/08/paw-ubuntu-and-os-x-like-plymouth-theme.html</a></li>
 </ul>
 <p>テーマのインストールと設定は上記参照．</p>
@@ -212,7 +212,7 @@ $ sudo <span class="keyword">update</span>-burg</code></pre>
 
 
       <div class="footer">
-      Copyright iaarchiver, 2013.
+      Copyright iaarchiver, 2014.
       </div>
     </div>
     <!-- [END] .wrapper -->
