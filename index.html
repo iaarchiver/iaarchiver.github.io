@@ -7,7 +7,7 @@
     <link rel="icon" type="image/x-icon" href="https://github.com/favicon.ico" />
     <link rel="stylesheet" type="text/css" href="/style.css" media="all" />
     <link rel="alternate" type="application/rss+xml" title="notions:iaarchiver - feed" href="/index.xml" />
-    <title>notions:iaarchiver</title> 
+    <title>notions:iaarchiver</title>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -22,13 +22,62 @@
     <!-- .sidebar -->
     <div class="sidebar">
       <ul class="sidebar-nav">
-        <li><a class="hide-button"><span class="websymbolsliga icon closefill"></span></a></li>
+        <li><a class="home-button"><span class="websymbolsliga icon alignleft"></span></a></li>
+        <li><a class="search-button"><span class="websymbolsliga icon search"></span></a></li>
         <li><a class="show-archive"><span class="websymbolsliga icon tag"></span></a></li>
+        <li><a class="hide-button"><span class="websymbolsliga icon closeoutline"></span></a></li>
       </ul>
-      <hr>
       <input id="sidebar-search" placeholder=" search keywords..." />
       <hr>
       <ul class="sidebar-list">
+      
+        <li>
+          <a href="/posts/2014-07-01-2231.html">
+            vimでshell実行後のEnterを押してくださいというプロンプトを消す
+            <span class="date">2014-07-01 22:31</span>
+            <span class="tag">vim</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2014-07-01-2230.html">
+            tmuxでペイン分割したらCWDを維持してくれない
+            <span class="date">2014-07-01 22:30</span>
+            <span class="tag">tmux</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2014-07-01-2221.html">
+            Ubuntu上のVMPlayer使用時にsynergysが落ちる
+            <span class="date">2014-07-01 22:21</span>
+            <span class="tag">synergy,vmplayer,ubuntu</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2014-07-01-2217.html">
+            シンボリックリンクのオリジナルのパスを取得する
+            <span class="date">2014-07-01 22:17</span>
+            <span class="tag">shell</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2014-07-01-2205.html">
+            コマンドを指定してTerminal.appを実行する
+            <span class="date">2014-07-01 22:05</span>
+            <span class="tag">mac,shell</span>
+          </a>
+        </li>
+      
+        <li>
+          <a href="/posts/2014-07-01-2140.html">
+            特定のアプリのみ終了時にウインドウを閉じる
+            <span class="date">2014-07-01 21:40</span>
+            <span class="tag">mac</span>
+          </a>
+        </li>
       
         <li>
           <a href="/posts/2014-06-27-1125.html">
@@ -104,6 +153,160 @@
     <div class="logo">notions :: iaarchiver</div>
     <!-- [END] .logo -->
     
+
+
+
+<div class="post">
+	<div class="post-info">
+	<h1><a href="/posts/2014-07-01-2231.html">vimでshell実行後のEnterを押してくださいというプロンプトを消す</a></h1>
+	<span class="date">July 1st 2014</span>
+	<span class="author"></span>
+	<hr>
+	</div>
+	<div class="post-content">
+		<p><a href="http://superuser.com/questions/498306/how-to-remove-the-prompt-when-execute-shell-command-in-vim">http://superuser.com/questions/498306/how-to-remove-the-prompt-when-execute-shell-command-in-vim</a></p>
+<pre><code><span class="pseudo">:silent</span> !<span class="tag">open</span> "%<span class="pseudo">:p</span><span class="pseudo">:h"</span></code></pre>
+<p>とする．しかしtmuxではCtrl-Lでリドローしないと正しく表示されないので最後にredraw!を加える</p>
+<pre><code><span class="symbol">:exe</span> <span class="string">"silent !open \"%:p:h\""</span> | redraw!</code></pre>
+
+	</div>
+</div>
+<hr>
+
+
+
+
+<div class="post">
+	<div class="post-info">
+	<h1><a href="/posts/2014-07-01-2230.html">tmuxでペイン分割したらCWDを維持してくれない</a></h1>
+	<span class="date">July 1st 2014</span>
+	<span class="author"></span>
+	<hr>
+	</div>
+	<div class="post-content">
+		<p><a href="http://d.hatena.ne.jp/tacahiroy/20140321/1395414592">http://d.hatena.ne.jp/tacahiroy/20140321/1395414592</a></p>
+<p>以前は<code>default-path</code>として勝手にCWDを維持して分割してくれていたみたいだが，tmux1.9より分割時のCWDは環境変数$PWDを参照する仕様に変更されたみたい．</p>
+<pre><code><span class="title">tmux</span> split-window [-c <span class="variable">$PWD</span>]</code></pre>
+<p>そのおかげでスクリプトから<code>tmux split-window</code>する場合は正しい$PWDを読んでくれるときもあれば，古い$PWDを読んでしまうこともある．</p>
+<p>なので分割前ペインのCWDをきちんと維持して分割するには以下を使用する</p>
+<pre><code><span class="title">tmux</span> split-window -c <span class="string">'#{pane_current_path}'</span></code></pre>
+
+	</div>
+</div>
+<hr>
+
+
+
+
+<div class="post">
+	<div class="post-info">
+	<h1><a href="/posts/2014-07-01-2221.html">Ubuntu上のVMPlayer使用時にsynergysが落ちる</a></h1>
+	<span class="date">July 1st 2014</span>
+	<span class="author"></span>
+	<hr>
+	</div>
+	<div class="post-content">
+		<p><a href="http://synergy-foss.org/spit/issues/details/3561/">http://synergy-foss.org/spit/issues/details/3561/</a></p>
+<p>vmwareのマウス切り替えとsynergyのスクリーン切り替えがコンフリクトするらしい．その結果synergysがSegmentationFaultエラーを出す．Vmwareウインドウの境界とsynergyの境界を同時（短時間の間）に越えると必ず落ちる．</p>
+<p>対策はsynergy.confにswitchDelayを設定すること．</p>
+<pre><code><span class="attribute">section</span>: <span class="string">options</span>
+    <span class="attribute">switchDelay</span>: <span class="string">500</span>
+<span class="attribute">end</code></pre>
+<p>これでほぼ落ちることはなくなった．</p>
+
+	</div>
+</div>
+<hr>
+
+
+
+
+<div class="post">
+	<div class="post-info">
+	<h1><a href="/posts/2014-07-01-2217.html">シンボリックリンクのオリジナルのパスを取得する</a></h1>
+	<span class="date">July 1st 2014</span>
+	<span class="author"></span>
+	<hr>
+	</div>
+	<div class="post-content">
+		<p>結論から言えば<code>pwd -P</code>をサブシェルで<code>cd</code>してから使う方法が一番良いっぽい．</p>
+<pre><code># シンボリックリンクのパスを<span class="variable">$file</span>としたとき
+originalpath=<span class="variable">$(</span>cd <span class="variable">$(</span><span class="keyword">dirname</span> <span class="variable">$file</span>); <span class="keyword">pwd</span> -P)</code></pre>
+<p><code>pwd -P</code>でカレントディレクトリのオリジナルパスを表示してくれる．
+単純に相対パスを絶対パスへ変換したいだけなら<code>-P</code>を取ればよい．</p>
+<p>他の方法としては<code>readlink</code>コマンドを使用する方法がある</p>
+<pre><code>readlink ~/<span class="variable">.vim</span>
+/Users/iaarchiver/Dropbox/Sync/dotfiles/<span class="variable">.vim</span></code></pre>
+<p>しかしこれは引数がSymlink以外だと何にも返してくれない．Symlinkであっても辿れるのは対象のリンク先のみ．再帰的にオリジナルを探索してくれるわけではないので注意．</p>
+<p>GNUでは再帰的にオリジナルを探してくれる<code>readlink -f</code>, 他にも<code>realpath</code>もあるらしい．</p>
+
+	</div>
+</div>
+<hr>
+
+
+
+
+<div class="post">
+	<div class="post-info">
+	<h1><a href="/posts/2014-07-01-2205.html">コマンドを指定してTerminal.appを実行する</a></h1>
+	<span class="date">July 1st 2014</span>
+	<span class="author"></span>
+	<hr>
+	</div>
+	<div class="post-content">
+		<p>Terminal.appでは以下のように引数を与えることが可能．</p>
+<ul>
+<li><p>ワーキングディレクトリを指定して起動する</p>
+<pre><code>  <span class="title">open</span> -a <span class="string">"Terminal"</span> ~/Desktop</code></pre>
+</li>
+<li><p>実行ファイルを指定して起動</p>
+<pre><code>  <span class="title">open</span> -a <span class="string">"Terminal"</span><span class="string">" ~/test.sh</code></pre>
+</li>
+</ul>
+<p>しかしGnome-Terminalのように直接コマンドを引数に与えることができない．シェルスクリプトやVimなどでどうしてもコマンドを与えたい場合は次のような方法がある．</p>
+<h2 id="tmp-">tmpファイルを経由する</h2>
+<pre><code><span class="title">echo</span> <span class="string">"echo 'Hello'"</span> &gt; .tmp/tmp; <span class="title">chmod</span> +x .tmp/tmp; <span class="title">open</span> -a <span class="string">"Terminal"</span> .tmp/tmp</code></pre>
+<h2 id="applescript-">Applescriptを経由する</h2>
+<pre><code><span class="function_start"><span class="keyword">on</span> <span class="title">run</span></span> argv
+    <span class="comment">-- 引数がひとつのみのとき実行する</span>
+    <span class="keyword">if</span> <span class="property">length</span> <span class="keyword">of</span> argv <span class="keyword">is</span> <span class="number">1</span> <span class="keyword">then</span>
+        <span class="keyword">set</span> launch_command <span class="keyword">to</span> <span class="keyword">the</span> <span class="keyword">first</span> <span class="property">item</span> <span class="keyword">of</span> argv
+        <span class="keyword">tell</span> <span class="type">application</span> <span class="string">"Terminal"</span>
+            do <span class="keyword">script</span> launch_command
+            <span class="command">activate</span>
+        <span class="keyword">end</span> <span class="keyword">tell</span>        
+    <span class="keyword">end</span> <span class="keyword">if</span>
+<span class="keyword">end</span> <span class="command">run</span></code></pre>
+<p>上のコードを<code>OpenTerminalWithCommand.scpt</code>として保存すれば以下のようにして利用可能．</p>
+<pre><code><span class="title">osascript</span> OpenTerminalWithCommand.scpt <span class="string">"echo Hi"</span></code></pre>
+
+	</div>
+</div>
+<hr>
+
+
+
+
+<div class="post">
+	<div class="post-info">
+	<h1><a href="/posts/2014-07-01-2140.html">特定のアプリのみ終了時にウインドウを閉じる</a></h1>
+	<span class="date">July 1st 2014</span>
+	<span class="author"></span>
+	<hr>
+	</div>
+	<div class="post-content">
+		<p>Mavericksではアプリケーション終了時の状態を保存し，再び実行したときに復元するのがデフォルト．これはシステム環境設定＞一般＞”アプリケーションを終了するときにウィンドウを閉じる”というオプションをオンにすることで無効にできる．</p>
+<p>便利なので有効にしておきたいが，Terminal.appなど一部アプリケーションでは終了時のウインドウを消したい場合，以下のコマンドで特定のアプリのみ無効にすることができる．</p>
+<pre><code>defaults write com<span class="variable">.apple</span><span class="variable">.Terminal</span> NSQuitAlwaysKeepsWindows -<span class="keyword">int</span> <span class="number">0</span></code></pre>
+<p>ちなみにアプリの識別子（<code>com.apple.Terminal</code>など）は以下のように取得可能．</p>
+<pre><code>osascript -e <span class="attribute">'id</span> <span class="keyword">of</span> app <span class="string">"Terminal"</span>'</code></pre>
+<p><a href="http://superuser.com/questions/346369/getting-the-bundle-identifier-of-an-os-x-application-in-a-shell-script">http://superuser.com/questions/346369/getting-the-bundle-identifier-of-an-os-x-application-in-a-shell-script</a></p>
+
+	</div>
+</div>
+<hr>
+
 
 
 

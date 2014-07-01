@@ -154,45 +154,31 @@
     <!-- [END] .logo -->
     <div class="post">
   <div class="post-info">
-  <h1><a href="/posts/2013-07-11-2152.html">Ubuntu13.04でTimeCapsuleをマウントする</a></h1>
-  <span class="date">July 11th 2013</span>
+  <h1><a href="/posts/2014-07-01-2217.html">シンボリックリンクのオリジナルのパスを取得する</a></h1>
+  <span class="date">July 1st 2014</span>
   <span class="author"></span>
   <hr>
   </div>
   <div class="post-content">
-    <p><a href="http://askubuntu.com/questions/285874/how-can-i-mount-cifs-shares-in-kubuntu-13-04">http://askubuntu.com/questions/285874/how-can-i-mount-cifs-shares-in-kubuntu-13-04</a></p>
-<p>12.10のときと若干変更があったのでメモ．確認環境は13.04(64bit)，TimeCapsuleの共有ディスクはデバイスパスワードでアクセス制限している状態です．</p>
-<p>予め<code>sudo apt-get install samba cifs-utils</code>を実行してsambaとcifs-utilsをインストールを確認しておきます．</p>
-<h2 id="timecapsule-ip-">TimeCapsuleのホスト名，IPアドレスをまずは確認する．</h2>
-<p>TimeCapsuleのIPアドレスやホスト名はmac上でAirmacユーティリティを使用することで確認できますが，Ubuntuから確認するには以下を実行します．</p>
-<pre><code><span class="comment">$</span> <span class="comment">avahi</span>-<span class="comment">browse</span> <span class="literal">-</span><span class="comment">a</span> <span class="literal">-</span><span class="comment">p</code></pre>
-<p>Bonjourネットワークに存在するすべてのホスト情報が一覧で表示されますので，その中からTimeCapsuleのものと思われるホスト名（hostname）とローカルIPアドレス（address）を確認します．</p>
-<pre><code><span class="keyword">...</span>
-=  wlan0 IPv4 TimeCapsule                                   Apple AirPort        local
-   hostname = [TimeCapsule.local]
-   address = [<span class="number">192.168</span><span class="number">.0</span><span class="number">.1</span>]
-   port = [<span class="number">5009</span>]
-<span class="keyword">...</span></code></pre>
-<p>このような表示が見つかれば，<code>TimeCapsule.local</code>，もしくは<code>192.168.0.1</code>でTimeCapsuleにアクセスすることが確認できます．</p>
-<h2 id="-">端末からマウントさせる</h2>
-<p><code>TimeCapsule.local</code>というホスト名のTimeCapsuleを<code>/media/timecapsule</code>にマウントさせるには以下を実行します．（予め<code>sudo mkdir /media/timecapsule</code>でマウントポイントのディレクトリを作成しておく必要があります．）</p>
-<pre><code>$ su<span class="operator"><span class="keyword">do</span> mount.cifs //TimeCapsule.<span class="keyword">local</span>/TimeCapsule /media/timecapsule -o pass=PASWORD,rw,iocharset=utf8,file_mode=<span class="number">0777</span>,dir_mode=<span class="number">0777</span>,sec=ntlm</code></pre>
-<p><code>//TimeCapsule.local/</code>の部分は<code>//192.168.0.1/</code>のようにローカルIPアドレスで指定しても構いません．（13.04では<code>sec=ntlm</code>オプションが必要になりました．）</p>
-<p>アンマウントさせる場合は以下を実行します．</p>
-<pre><code>$ su<span class="operator"><span class="keyword">do</span> umount /media/timecapsule</code></pre>
-<h2 id="fstab-">fstabで自動マウントさせる</h2>
-<p>起動時にマウントさせるには<code>/etc/fstab</code>に以下の行を追加します．</p>
-<pre><code>/<span class="regexp">/TimeCapsule.local/</span><span class="constant">TimeCapsule</span>/  <span class="regexp">/media/timecapsule</span>  cifs password=macintosh,rw,iocharset=utf8,file_mode=<span class="number">0777</span>,dir_mode=<span class="number">0777</span>,sec=ntlm</code></pre>
-<p>追加後，再起動もしくは<code>sudo mount -a</code>を実行でマウントが確認できれば成功です．</p>
+    <p>結論から言えば<code>pwd -P</code>をサブシェルで<code>cd</code>してから使う方法が一番良いっぽい．</p>
+<pre><code># シンボリックリンクのパスを<span class="variable">$file</span>としたとき
+originalpath=<span class="variable">$(</span>cd <span class="variable">$(</span><span class="keyword">dirname</span> <span class="variable">$file</span>); <span class="keyword">pwd</span> -P)</code></pre>
+<p><code>pwd -P</code>でカレントディレクトリのオリジナルパスを表示してくれる．
+単純に相対パスを絶対パスへ変換したいだけなら<code>-P</code>を取ればよい．</p>
+<p>他の方法としては<code>readlink</code>コマンドを使用する方法がある</p>
+<pre><code>readlink ~/<span class="variable">.vim</span>
+/Users/iaarchiver/Dropbox/Sync/dotfiles/<span class="variable">.vim</span></code></pre>
+<p>しかしこれは引数がSymlink以外だと何にも返してくれない．Symlinkであっても辿れるのは対象のリンク先のみ．再帰的にオリジナルを探索してくれるわけではないので注意．</p>
+<p>GNUでは再帰的にオリジナルを探してくれる<code>readlink -f</code>, 他にも<code>realpath</code>もあるらしい．</p>
 
   </div>
 
   <div class="navigation">
       
-        <span class="newer"><a href="/posts/2013-07-29-0152.html">&#8672;&nbsp;newer</a></span>
+        <span class="newer"><a href="/posts/2014-07-01-2221.html">&#8672;&nbsp;newer</a></span>
       
       
-        <span class="older"><a href="/posts/2013-07-11-2000.html">older&nbsp;&#8674;</a></span>
+        <span class="older"><a href="/posts/2014-07-01-2205.html">older&nbsp;&#8674;</a></span>
       
     </div>
   <div class="comments">
@@ -200,8 +186,8 @@
       <div id="disqus_thread"></div>
       <script type="text/javascript">
         window.disqus_identifier="";
-        window.disqus_url="http://iaarchiver.github.io/posts/2013-07-11-2152.html";
-        window.disqus_title="Ubuntu13.04でTimeCapsuleをマウントする";
+        window.disqus_url="http://iaarchiver.github.io/posts/2014-07-01-2217.html";
+        window.disqus_title="シンボリックリンクのオリジナルのパスを取得する";
       </script>
         <script type="text/javascript" src="http://disqus.com/forums/iaarchiver/embed.js"></script>
         <noscript><a href="http://iaarchiver.disqus.com/?url=ref">View the discussion thread.</a></noscript>
