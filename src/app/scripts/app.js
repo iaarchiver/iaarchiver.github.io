@@ -149,18 +149,9 @@ $(function () {
 
 
 	// search ///////////////////////////////////////////////////////////////////
-<<<<<<< HEAD
-<<<<<<< HEAD
 	$('a.search-button').on({'click': function(){
 		$('#sidebar-search').toggle().focus();
 	}});
-=======
->>>>>>> 96d13a2... fixed sidebar-search
-=======
-	$('a.search-button').on({'click': function(){
-		$('#sidebar-search').toggle().focus();
-	}});
->>>>>>> 65f3637... changed sidebar-nav
 	// override .contains filter (ignore case)
 	$.expr[':'].contains = function(a, i, m) {
 		return $(a).text().toUpperCase()
