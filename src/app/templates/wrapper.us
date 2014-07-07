@@ -48,6 +48,8 @@
     <!-- .logo -->
     <div class="logo">notions :: iaarchiver</div>
     <!-- [END] .logo -->
+
+	 <% _.chain(site.posts).reverse() // sort inverse %>
     <%= yield %>
 
       <div class="footer">
