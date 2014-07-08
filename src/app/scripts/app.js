@@ -1,10 +1,15 @@
 $(function () {
 
+	var isiOS = (((navigator.userAgent.indexOf('iPhone') > 0 && navigator.userAgent.indexOf('iPad') == -1) || navigator.userAgent.indexOf('iPod') > 0)?1:0),
+		 isAndroid = ((navigator.userAgent.indexOf('Android') > 0)?1:0),
+		 isMobile = (isiOS || isAndroid?1:0);
+
 	function refresh(){
 		$('.sidebar-content')
 			.css({'height':window.innerHeight-$('.sidebar-content').position().top+'px'})
 			.scrollable({
-				'speed':1
+				'speed':1,
+				'scrollbar': (isMobile)? 'visible': 'hidden'
 			});
 	}
 	refresh();
