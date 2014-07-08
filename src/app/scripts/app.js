@@ -1,10 +1,14 @@
 $(function () {
 
-	$('.sidebar').scrollable();
-
 	function refresh(){
-		$('.sidebar').scrollable();
+		$('.sidebar-content')
+			.css({'height':window.innerHeight-$('.sidebar-content').position().top+'px'})
+			.scrollable({
+				'speed':1
+			});
 	}
+	refresh();
+
 	$(window).resize(refresh);
 
 	var $wrapper = $('.wrapper'),
@@ -151,6 +155,7 @@ $(function () {
 	// search ///////////////////////////////////////////////////////////////////
 	$('a.search-button').on({'click': function(){
 		$('#sidebar-search').toggle().focus();
+		//refresh();
 	}});
 	// override .contains filter (ignore case)
 	$.expr[':'].contains = function(a, i, m) {

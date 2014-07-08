@@ -29,6 +29,7 @@
       </ul>
       <input id="sidebar-search" placeholder=" search keywords..." />
       <hr>
+		<div class="sidebar-content">
       <ul class="sidebar-list">
       <% _(site.posts).chain().each(function(post){ %>
         <li>
@@ -40,6 +41,7 @@
         </li>
       <% }) %>
       </ul>
+		</div>
     </div>
     <!-- [END] .sidebar -->
 
