@@ -6,11 +6,12 @@ $(function () {
 
 	function refresh(){
 		$('.sidebar-content')
-			.css({'height':window.innerHeight-$('.sidebar-content').position().top+'px'})
-			.scrollable({
-				'speed':1,
-				'scrollbar': (isMobile)? 'visible': 'hidden'
-			});
+			.css({'height':window.innerHeight-$('.sidebar-content').position().top+'px'});
+
+		isMobile
+			&& $('sidebar-content').scrollable({
+					'speed':1
+				});
 	}
 	refresh();
 
@@ -29,7 +30,7 @@ $(function () {
 		}, 250, 'swing');
 		$sidebar.stop(true,false).animate({
 			opacity: 1
-		},250);
+		},250).focus();
 
 		$wrapper.stop(true,false).animate({
 			marginLeft: '-320px'
@@ -45,14 +46,14 @@ $(function () {
 		}, 250, 'swing');
 		$sidebar.stop(true,false).animate({
 			opacity: 0.3
-		},250);
+		},250)
 
 		$wrapper.stop(true,false).animate({
 			marginLeft: 0
 		},250, 'swing', function(){
 			isHidden = true;
 			if (callb) callb();
-		});
+		}).focus();
 	}
 
 	$logo.on({ 'mouseenter': function(){
